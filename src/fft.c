@@ -1,9 +1,82 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <complex.h>
+/************************************************************
+*                                                           *
+*   Bruno Brandão Inácio - NUSP: 9838122                    *
+*   Davi José Marques Vieira - NUSP 9838140                 *
+*                                                           *
+*************************************************************
+* src/fft.c                                                 *
+*************************************************************
+* Funções relacionadas à Transformada de Fourier.           *
+************************************************************/
 
-#define pi  3.1415
+#include "fft.h"
+
+/**
+ *
+ *
+ */
+double complex dimpar(double complex* F, int ntermos, int k){
+    int n = (int)(ntermos/2);
+    double complex fimpar = 0.0;
+
+
+    for(int j = 0;j < n;j++){
+        fimpar += F[2*j+1]*cexp(-1i*k*pi*j*2/n);
+    }
+
+    return fimpar;
+}
+
+/**
+ *
+ *
+ */
+double complex dpar(double complex* F, int ntermos, int k){
+    int n = (int)(ntermos/2);
+    double complex fpar = 0.0;
+
+    for(int j = 0;j < n;j++){
+            fpar += F[2*j]*cexp(-1i*k*pi*j*2/n);
+    }
+
+    return fpar;
+}
+
+/**
+ *
+ *MANO, TA BICHADO O NUMERO DE ELEMENTOS SEPA, EU NAO SEI --- parte do k + N, como fica os de 0 a k??
+ */
+double complex* fftdireta(double complex* F, int ntermos){// termos = 2N
+
+   double complex* ck = malloc(ntermos * sizeof(double complex*));
+
+    for(int k = 0;k < ntermos/2 ;k++){
+        ck[k] = dpar(&F,ntermos,k) - cexp(-1i*k*pi*2/ntermos)*dimpar(&F,ntermos,k);
+    }
+
+    return ck;
+}
+
+/**
+ *
+ *
+ */
+double complex* fftinversa(double complex* ck, int ntermos){
+    double complex* F = malloc(ntermos * sizeof(double complex*));
+
+    for(int j = 0; j < ntermos; j++){
+        if(j < ntermos/2){
+            F[j] = ipar(&ck,ntermos,j) + cexp(1i*pi*j*2/ntermos)*iimpar(&ck,ntermos,j);
+        }else{
+            F[j] = ipar(&ck,ntermos,j) - cexp(1i*pi*j*2/ntermos)*iimpar(&ck,ntermos,j);
+        }
+    }
+
+    return F;
+}
+
+
+
 /**
 fftrec(double complex* c, double complex* f,int n,int dir){
     fimpar = malloc((int)(n/2) * sizeof(double complex*));
@@ -30,87 +103,6 @@ fftrec(double complex* c, double complex* f,int n,int dir){
 }
 ***/
 
-double complex dimpar(double complex* F, int ntermos, int k){
-    int n = (int)(ntermos/2);
-    double complex fimpar = 0.0;
-
-
-    for(int j = 0;j < n;j++){
-        fimpar += F[2*j+1]*cexp(-1i*k*pi*j*2/n);
-    }
-
-    return fimpar;
-}
-
-double complex dpar(double complex* F, int ntermos, int k){
-    int n = (int)(ntermos/2);
-    double complex fpar = 0.0;
-
-    for(int j = 0;j < n;j++){
-            fpar += F[2*j]*cexp(-1i*k*pi*j*2/n);
-    }
-
-    return fpar;
-}
-/****
-MANO, TA BICHADO O NUMERO DE ELEMENTOS SEPA, EU NAO SEI --- parte do k + N, como fica os de 0 a k??
-***/
-double complex* fftdireta(double complex* F, int ntermos){// termos = 2N
-
-   double complex* ck = malloc(ntermos * sizeof(double complex*));
-
-    for(int k = 0;k < ntermos/2 ;k++){
-        ck[k] = dpar(&F,ntermos,k) - cexp(-1i*k*pi*2/ntermos)*dimpar(&F,ntermos,k);
-    }
-
-    return ck;
-}
-
-/****************************************************************************************/
-double complex ipar(double complex* ck, int ntermos, int j){
-    int n = (int)(ntermos/2);
-    double complex ckpar = 0.0;
-
-    for(int k = 0; j < n; k++){
-            ckpar += ck[2*k]*cexp(2*1i*k*pi*j/n);
-    }
-
-    return ckpar;
-}
-
-double complex iimpar(double complex* ck, int ntermos, int j){
-    int n = (int)(ntermos/2);
-    double complex ckimpar = 0.0;
-
-    for(int k = 0; j < n; k++){
-            ckimpar += ck[2*k+1]*cexp(2*1i*k*pi*j/n);
-    }
-
-    return ckimpar;
-}
-
-double complex* fftinversa(double complex* ck, int ntermos){
-    double complex* F = malloc(ntermos * sizeof(double complex*));
-
-    for(int j = 0; j < ntermos; j++){
-        if(j < ntermos/2){
-            F[j] = ipar(&ck,ntermos,j) + cexp(1i*pi*j*2/ntermos)*iimpar(&ck,ntermos,j);
-        }else{
-            F[j] = ipar(&ck,ntermos,j) - cexp(1i*pi*j*2/ntermos)*iimpar(&ck,ntermos,j);
-        }
-    }
-
-
-    return F;
-}
-
-
-/**********************************************************************************************/
-int main()
-{
-    printf("Hello world!\n");
-    return 0;
-}
 
 /*
 fftrec(c,f,n,dir)

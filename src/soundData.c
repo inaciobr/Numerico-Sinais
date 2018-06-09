@@ -5,6 +5,7 @@
 *                                                           *
 *************************************************************
 * src/soundData.c                                           *
+*************************************************************
 * Funções relacionadas a leitura e escrita de arquivos .dat *
 * no padrão do software SoX - SOund eXchange                *
 ************************************************************/
@@ -17,9 +18,20 @@
  */
 soundData readSoX(char file[]) {
     int lines = numberOfLines(file) - 2;
-    FILE *fp = fopen(file, "r");
-
     soundData sox;
+
+    if (!lines) {
+        sox.sampleRate = 0;
+        sox.numSamples = 0;
+        sox.channels = 0;
+        sox.ch1 = NULL;
+        sox.ch2 = NULL;
+        sox.duration = 0.0;
+
+        return sox;
+    }
+
+    FILE *fp = fopen(file, "r");
 
     fscanf(fp, "; Sample Rate %d\n", &sox.sampleRate);
     fscanf(fp, "; Channels %d\n", &sox.channels);
@@ -78,6 +90,7 @@ void freeSoX(soundData *sox) {
         free(sox->ch2);
 
     sox->sampleRate = 0;
+    sox->numSamples = 0;
     sox->channels = 0;
     sox->ch1 = NULL;
     sox->ch2 = NULL;

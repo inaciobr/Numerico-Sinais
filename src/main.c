@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "soundData.h"
+#include "fft.h"
 
 int main() {
     char file[256] = "dados_sons/String-Guitar-C4.dat";
