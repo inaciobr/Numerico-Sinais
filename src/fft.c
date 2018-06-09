@@ -61,6 +61,36 @@ double complex* fftdireta(double complex* F, int ntermos){// termos = 2N
  *
  *
  */
+double complex ipar(double complex* ck, int ntermos, int j){
+    int n = (int)(ntermos/2);
+    double complex ckpar = 0.0;
+
+    for(int k = 0; j < n; k++){
+            ckpar += ck[2*k]*cexp(2*1i*k*pi*j/n);
+    }
+
+    return ckpar;
+}
+
+/**
+ *
+ *
+ */
+double complex iimpar(double complex* ck, int ntermos, int j){
+    int n = (int)(ntermos/2);
+    double complex ckimpar = 0.0;
+
+    for(int k = 0; j < n; k++){
+            ckimpar += ck[2*k+1]*cexp(2*1i*k*pi*j/n);
+    }
+
+    return ckimpar;
+}
+
+/**
+ *
+ *
+ */
 double complex* fftinversa(double complex* ck, int ntermos){
     double complex* F = malloc(ntermos * sizeof(double complex*));
 
@@ -71,6 +101,7 @@ double complex* fftinversa(double complex* ck, int ntermos){
             F[j] = ipar(&ck,ntermos,j) - cexp(1i*pi*j*2/ntermos)*iimpar(&ck,ntermos,j);
         }
     }
+
 
     return F;
 }
