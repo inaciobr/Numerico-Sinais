@@ -13,103 +13,56 @@
 
 /**
  *
+ * 2N = nTermos
  *
  */
-double complex dimpar(double complex* F, int ntermos, int k){
-    int n = (int)(ntermos/2);
-    double complex fimpar = 0.0;
+double complex *fftDireta(double complex *F, int nTermos) {
+    double complex* ck = calloc(nTermos, sizeof(double complex));
+    double complex odd, even, fase;
+    int N = nTermos / 2;
 
+    for (int k = 0; k < N; k++) {
+        odd = even = 0.0;
 
-    for(int j = 0;j < n;j++){
-        fimpar += F[2*j+1]*cexp(-1i*k*pi*j*2/n);
-    }
+        for (int j = 0; j < N; j++) {
+            fase = cexp(-1i * k * PI * j / (N/2));
+            even += F[2*j] * fase;
+            odd += F[2*j + 1] * fase;
+        }
 
-    return fimpar;
-}
-
-/**
- *
- *
- */
-double complex dpar(double complex* F, int ntermos, int k){
-    int n = (int)(ntermos/2);
-    double complex fpar = 0.0;
-
-    for(int j = 0;j < n;j++){
-            fpar += F[2*j]*cexp(-1i*k*pi*j*2/n);
-    }
-
-    return fpar;
-}
-
-/**
- *
- *MANO, TA BICHADO O NUMERO DE ELEMENTOS SEPA, EU NAO SEI --- parte do k + N, como fica os de 0 a k??
- */
-double complex* fftdireta(double complex* F, int ntermos){// termos = 2N
-
-   double complex* ck = malloc(ntermos * sizeof(double complex*));
-
-    for(int k = 0;k < ntermos/2 ;k++){
-        ck[k] = dpar(&F,ntermos,k) - cexp(-1i*k*pi*2/ntermos)*dimpar(&F,ntermos,k);
+        odd *= cexp(-1i * k * PI / N);
+        ck[k] = (even + odd) / nTermos;
+        ck[k + N] = (even - odd) / nTermos;
     }
 
     return ck;
 }
 
-/**
- *
- *
- */
-double complex ipar(double complex* ck, int ntermos, int j){
-    int n = (int)(ntermos/2);
-    double complex ckpar = 0.0;
+double complex *fftInversa(double complex *ck, int nTermos) {
+    double complex *F = malloc(nTermos * sizeof(double complex));
+    double complex odd, even, fase;
+    int N = nTermos / 2;
 
-    for(int k = 0; j < n; k++){
-            ckpar += ck[2*k]*cexp(2*1i*k*pi*j/n);
-    }
+    for (int j = 0; j < N; j++) {
+        odd = even = 0.0;
 
-    return ckpar;
-}
-
-/**
- *
- *
- */
-double complex iimpar(double complex* ck, int ntermos, int j){
-    int n = (int)(ntermos/2);
-    double complex ckimpar = 0.0;
-
-    for(int k = 0; j < n; k++){
-            ckimpar += ck[2*k+1]*cexp(2*1i*k*pi*j/n);
-    }
-
-    return ckimpar;
-}
-
-/**
- *
- *
- */
-double complex* fftinversa(double complex* ck, int ntermos){
-    double complex* F = malloc(ntermos * sizeof(double complex*));
-
-    for(int j = 0; j < ntermos; j++){
-        if(j < ntermos/2){
-            F[j] = ipar(&ck,ntermos,j) + cexp(1i*pi*j*2/ntermos)*iimpar(&ck,ntermos,j);
-        }else{
-            F[j] = ipar(&ck,ntermos,j) - cexp(1i*pi*j*2/ntermos)*iimpar(&ck,ntermos,j);
+        for (int k = 0; k < N; k++) {
+            fase = cexp(1i * k * PI * j / (N/2));
+            even += ck[2*k] * fase;
+            odd += ck[2*k + 1] * fase;
         }
-    }
 
+        odd *= cexp(1i * j * PI / N);
+        F[j] = (even + odd);
+        F[j + N] = (even - odd);
+    }
 
     return F;
 }
 
 
-
 /**
-fftrec(double complex* c, double complex* f,int n,int dir){
+fftrec(double complex *c, double complex *f, int n, int dir){
     fimpar = malloc((int)(n/2) * sizeof(double complex*));
     fpar = malloc(((int)(n/2)) + 1)* sizeof(double complex*));
 

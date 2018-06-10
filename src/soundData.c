@@ -21,13 +21,7 @@ soundData readSoX(char file[]) {
     soundData sox;
 
     if (!lines) {
-        sox.sampleRate = 0;
-        sox.numSamples = 0;
-        sox.channels = 0;
-        sox.ch1 = NULL;
-        sox.ch2 = NULL;
-        sox.duration = 0.0;
-
+		free(&sox);
         return sox;
     }
 
@@ -70,7 +64,7 @@ void writeSoX(char file[], soundData sox) {
         if (sox.channels == 2)
             fprintf(fp, "%15.11g ", sox.ch2[i]);
 
-        fprintf(fp, "%\n");
+        fprintf(fp, "\n");
 
         tempo += 1.0 / sox.sampleRate;
     }
@@ -102,13 +96,12 @@ void freeSoX(soundData *sox) {
  *
  */
 int numberOfLines(char file[]) {
-    int lines = 0;
-    char ch;
-
     FILE *fp = fopen(file, "r");
-
     if (fp == NULL)
         return 0;
+
+    int lines = 0;
+    char ch;
 
     while ((ch = getc(fp)) != EOF)
         if (ch == '\n')

@@ -4,29 +4,24 @@
 *   Davi José Marques Vieira - NUSP 9838140                 *
 *                                                           *
 *************************************************************
-* src/soundData.h                                           *
+* src/soundFrequency.h                                      *
 ************************************************************/
 
-#ifndef SOUNDDATA_H_INCLUDED
-#define SOUNDDATA_H_INCLUDED
+#ifndef SOUNDFREQUENCY_H_INCLUDED
+#define SOUNDFREQUENCY_H_INCLUDED
 
-#include <stdio.h>
+#include <complex.h>
+#include <stdlib.h>
 
 typedef struct {
-    int sampleRate;
-    int channels;
+    double frequency;
 
-    double duration;
+    int size;
+    complex double *cAmplitude;
+} soundFrequency;
 
-    int numSamples;
-    double *ch1;
-    double *ch2;
-} soundData;
+soundFrequency SoX2Frequency();
 
-soundData readSoX(char file[]);
-void writeSoX(char file[], soundData sox);
-void freeSoX(soundData *sox);
-
-int numberOfLines (char file[]);
+void channels2Complex(int size, double *ch1, double *ch2, double complex **cCh1, double complex **cCh2);
 
 #endif // SOUDDATA_H_INCLUDED

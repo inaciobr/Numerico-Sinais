@@ -31,6 +31,17 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="src/fft.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/fft.h" />
+		<Unit filename="src/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/soundData.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/soundData.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -12,6 +12,9 @@
 
 #include <complex.h>
 
-#define pi  3.14159265358979323846
+#define PI  3.14159265358979323846
+
+double complex *fftDireta(double complex *F, int nTermos);
+double complex *fftInversa(double complex *ck, int nTermos);
 
 #endif // SOUDDATA_H_INCLUDED
