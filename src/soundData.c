@@ -30,16 +30,16 @@ soundData readSoX(char file[]) {
     fscanf(fp, "; Sample Rate %d\n", &sox.sampleRate);
     fscanf(fp, "; Channels %d\n", &sox.channels);
 
-    sox.ch1 = malloc((lines) * sizeof(double));
-    sox.ch2 = sox.channels == 2 ? malloc((lines) * sizeof(double)) : NULL;
+    sox.channel1 = malloc((lines) * sizeof(double));
+    sox.channel2 = sox.channels == 2 ? malloc((lines) * sizeof(double)) : NULL;
     sox.duration = (double)(lines - 1) / sox.sampleRate;
     sox.numSamples = lines;
 
     for (int i = 0; i < lines; i++) {
-        fscanf(fp, "%*lf %lf", &sox.ch1[i]);
+        fscanf(fp, "%*lf %lf", &sox.channel1[i]);
 
         if (sox.channels == 2)
-            fscanf(fp, " %lf", &sox.ch2[i]);
+            fscanf(fp, " %lf", &sox.channel2[i]);
     }
 
     fclose(fp);
@@ -59,10 +59,10 @@ void writeSoX(char file[], soundData sox) {
 
     double tempo = 0.0;
     for (int i = 0; i < sox.numSamples; i++) {
-        fprintf(fp, " %15.8g  %15.11g ", tempo, sox.ch1[i]);
+        fprintf(fp, " %15.8g  %15.11g ", tempo, sox.channel1[i]);
 
         if (sox.channels == 2)
-            fprintf(fp, "%15.11g ", sox.ch2[i]);
+            fprintf(fp, "%15.11g ", sox.channel2[i]);
 
         fprintf(fp, "\n");
 
@@ -77,17 +77,17 @@ void writeSoX(char file[], soundData sox) {
  *
  */
 void freeSoX(soundData *sox) {
-    if (sox->ch1 != NULL)
-        free(sox->ch1);
+    if (sox->channel1 != NULL)
+        free(sox->channel1);
 
-    if (sox->ch2 != NULL)
-        free(sox->ch2);
+    if (sox->channel2 != NULL)
+        free(sox->channel2);
 
     sox->sampleRate = 0;
     sox->numSamples = 0;
     sox->channels = 0;
-    sox->ch1 = NULL;
-    sox->ch2 = NULL;
+    sox->channel1 = NULL;
+    sox->channel2 = NULL;
     sox->duration = 0.0;
 }
 

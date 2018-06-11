@@ -19,8 +19,8 @@ typedef struct {
     double duration;
 
     int numSamples;
-    double *ch1;
-    double *ch2;
+    double *channel1;
+    double *channel2;
 } soundData;
 
 soundData readSoX(char file[]);

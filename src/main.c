@@ -40,12 +40,9 @@ int main() {
 
     soundData sox = readSoX(file);
     soundFrequency freq = SoX2Frequency(sox);
+    soundData sox2 = frequency2SoX(freq);
+    writeSoX("volta.dat", sox2);
 
-    FILE *fp = fopen ("test.txt", "w");
-    for (int i = 0; i < sox.numSamples; i++)
-        fprintf(fp, "%d, %f, %f\n", i, cabs(freq.cAmplitude[i]), carg(freq.cAmplitude[i]));
-
-    fclose(fp);
 
     return 0;
 }
