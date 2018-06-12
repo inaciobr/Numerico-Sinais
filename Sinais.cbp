@@ -42,6 +42,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/soundData.h" />
+		<Unit filename="src/soundFrequency.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/soundFrequency.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

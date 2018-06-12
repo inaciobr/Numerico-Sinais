@@ -21,7 +21,7 @@ soundData readSoX(char file[]) {
     soundData sox;
 
     if (!lines) {
-		free(&sox);
+		freeSoX(&sox);
         return sox;
     }
 
@@ -36,7 +36,7 @@ soundData readSoX(char file[]) {
     sox.numSamples = lines;
 
     for (int i = 0; i < lines; i++) {
-        fscanf(fp, "%*lf %lf", &sox.channel1[i]);
+        fscanf(fp, "%*f %lf", &sox.channel1[i]);
 
         if (sox.channels == 2)
             fscanf(fp, " %lf", &sox.channel2[i]);

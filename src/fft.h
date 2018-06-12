@@ -11,10 +11,11 @@
 #define FFT_H_INCLUDED
 
 #include <complex.h>
+#include <stdlib.h>
 
 #define PI  3.14159265358979323846
 
-double complex *fftDireta(double complex *F, int nTermos);
-double complex *fftInversa(double complex *ck, int nTermos);
+void fftDireta(double complex *F, double complex *ck, int nTermos);
+void fftInversa(double complex *F, double complex *ck, int nTermos);
 
 #endif // SOUDDATA_H_INCLUDED

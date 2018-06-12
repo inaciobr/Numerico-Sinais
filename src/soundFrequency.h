@@ -18,8 +18,8 @@
 
 typedef struct {
     int frequency;
-
     int size;
+
     complex double *channel1;
     complex double *channel2;
 } soundFrequency;
@@ -27,7 +27,7 @@ typedef struct {
 soundFrequency SoX2Frequency(soundData sox);
 soundData frequency2SoX(soundFrequency frequency);
 
-void channels2Complex(int size, double *ch1, double *ch2, double complex **cCh1, double complex **cCh2);
-void complex2channels(int size, double complex *cChannel1, double complex *cChannel2, double **channel1, double **channel2);
+void double2complex(double *channel, double complex *cChannel, int size) ;
+void complex2double(double complex *cChannel, double *channel, int size) ;
 
 #endif // SOUDDATA_H_INCLUDED

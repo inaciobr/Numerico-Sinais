@@ -16,8 +16,7 @@
  * 2N = nTermos
  *
  */
-double complex *fftDireta(double complex *F, int nTermos) {
-    double complex* ck = calloc(nTermos, sizeof(double complex));
+void fftDireta(double complex *F, double complex *ck, int nTermos) {
     double complex odd, even, fase;
     int N = nTermos / 2;
 
@@ -31,15 +30,13 @@ double complex *fftDireta(double complex *F, int nTermos) {
         }
 
         odd *= cexp(-1i * k * PI / N);
+
         ck[k] = (even + odd) / nTermos;
         ck[k + N] = (even - odd) / nTermos;
     }
-
-    return ck;
 }
 
-double complex *fftInversa(double complex *ck, int nTermos) {
-    double complex *F = malloc(nTermos * sizeof(double complex));
+void fftInversa(double complex *F, double complex *ck, int nTermos) {
     double complex odd, even, fase;
     int N = nTermos / 2;
 
@@ -53,11 +50,10 @@ double complex *fftInversa(double complex *ck, int nTermos) {
         }
 
         odd *= cexp(1i * j * PI / N);
+
         F[j] = (even + odd);
         F[j + N] = (even - odd);
     }
-
-    return F;
 }
 
 

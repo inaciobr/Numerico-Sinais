@@ -43,6 +43,5 @@ int main() {
     soundData sox2 = frequency2SoX(freq);
     writeSoX("volta.dat", sox2);
 
-
     return 0;
 }
