@@ -30,4 +30,4 @@ void freeSoX(soundData *sox);
 
 int numberOfLines (char file[]);
 
-#endif // SOUDDATA_H_INCLUDED
+#endif // SOUNDDATA_H_INCLUDED

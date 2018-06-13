@@ -4,20 +4,10 @@
 *   Davi José Marques Vieira - NUSP 9838140                 *
 *                                                           *
 *************************************************************
-* src/fft.h                                                 *
+* src/filtro.c                                              *
+*************************************************************
+*                                                           *
 ************************************************************/
 
-#ifndef FFT_H_INCLUDED
-#define FFT_H_INCLUDED
+#include "filtro.h"
 
-#include <complex.h>
-#include <stdlib.h>
-
-#define PI  3.14159265358979323846
-
-void fftDireta(double complex *F, double complex *ck, int nTermos);
-void fftInversa(double complex *F, double complex *ck, int nTermos);
-
-void fftrec(double complex *F, double complex *ck,  int nTermos, int dir);
-
-#endif // SOUDDATA_H_INCLUDED

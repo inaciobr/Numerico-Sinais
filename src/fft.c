@@ -56,32 +56,54 @@ void fftInversa(double complex *F, double complex *ck, int nTermos) {
     }
 }
 
+void fft2(double complex *c, double complex *f,  int nTermos, int dir) {
+    fftrec(c, f, nTermos, dir);
+
+    if (dir)
+        for (int i = 0; i < nTermos; i++)
+            c[i] /= nTermos;
+}
 
 /**
-fftrec(double complex *c, double complex *f, int n, int dir){
-    fimpar = malloc((int)(n/2) * sizeof(double complex*));
-    fpar = malloc(((int)(n/2)) + 1)* sizeof(double complex*));
+ *
+ */
+void fftrec(double complex *c, double complex *f,  int nTermos, int dir) {
+    int N = nTermos / 2;
 
-    if(n == 1){
+    if (N == 1){
         c[0] = f[0] + f[1];
         c[1] = f[0] - f[1];
 
-    }else{
-        for(int j = 0;j < n;j++){
-            fpar[j] = f[2*j];
-            fimpar[j] = f[2*j+1];
-        }
+        return;
     }
-    fftrec(par,fpar,n/2,dir);
-    fftrec(impar,fimpar,n/2,dir);
 
-    for(int i = 0; i < n - 1; i++){
-        if(dir){
+    double complex *even = malloc(N * sizeof(double complex));
+    double complex *odd = malloc(N * sizeof(double complex));
+    double complex *fe = malloc(N * sizeof(double complex));
+    double complex *fo = malloc(N * sizeof(double complex));
 
-        }
+    for (int j = 0; j < N; j++) {
+        fe[j] = f[2*j];
+        fo[j] = f[2*j + 1];
     }
+
+    fftrec(even, fe, N, dir);
+    fftrec(odd, fo, N, dir);
+
+    double complex eij;
+    for (int j = 0; j < N; j++) {
+        eij = cexp((dir ? -1i : 1i) * j * PI / N);
+
+        c[j] = even[j] + eij*odd[j];
+        c[j + N] = even[j] - eij*odd[j];
+    }
+
+    free(even);
+    free(odd);
+    free(fe);
+    free(fo);
 }
-***/
+
 
 
 /*

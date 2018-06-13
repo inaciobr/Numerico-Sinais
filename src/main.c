@@ -23,25 +23,30 @@ int main() {
     printf("Digite o endereco do arquivo que deseja ler\n");
     /*scanf("%256[^\n]", file);*/
 
-/*
+
     double complex F[4] = {5, -1, 3, 1};
 
-    double complex *s = fftDireta(F, 4);
+    double complex s[4];
+    //fftDireta(F, s, 4);
+    fft2(s, F, 4, 1);
     for (int i = 0; i < 4; i++)
         printf("%f, %f\n", creal(s[i]), cimag(s[i]));
 
     printf("\n\n");
 
-    double complex *f = fftInversa(s, 4);
+    double complex f[4];
+    //fftInversa(f, s, 4);
+    fft2(f, s, 4, 0);
     for (int i = 0; i < 4; i++)
         printf("%f, %f\n", creal(f[i]), cimag(f[i]));
-*/
+/*
 
 
     soundData sox = readSoX(file);
     soundFrequency freq = SoX2Frequency(sox);
     soundData sox2 = frequency2SoX(freq);
     writeSoX("volta.dat", sox2);
+*/
 
     return 0;
 }

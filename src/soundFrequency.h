@@ -30,4 +30,4 @@ soundData frequency2SoX(soundFrequency frequency);
 void double2complex(double *channel, double complex *cChannel, int size) ;
 void complex2double(double complex *cChannel, double *channel, int size) ;
 
-#endif // SOUDDATA_H_INCLUDED
+#endif // SOUNDFREQUENCY_H_INCLUDED

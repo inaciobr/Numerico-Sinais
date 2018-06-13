@@ -21,6 +21,7 @@ soundFrequency SoX2Frequency(soundData sox) {
     frequency.channel1 = malloc(sox.numSamples * sizeof(double complex));
     double2complex(sox.channel1, complexChannel, sox.numSamples);
     fftDireta(complexChannel, frequency.channel1, frequency.size);
+    //fft2(frequency.channel1, complexChannel, frequency.size, 1);
 
     if (sox.channels == 2) {
         frequency.channel2 = malloc(sox.numSamples * sizeof(double complex));
@@ -46,6 +47,7 @@ soundData frequency2SoX(soundFrequency frequency) {
 
     sox.channel1 = malloc(frequency.size * sizeof(double));
     fftInversa(complexChannel, frequency.channel1, frequency.size);
+    //fft2(complexChannel, frequency.channel1, frequency.size, 0);
     complex2double(complexChannel, sox.channel1, frequency.size);
 
     if (sox.channels == 2) {
