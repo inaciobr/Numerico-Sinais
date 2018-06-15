@@ -67,7 +67,7 @@ void fft2(double complex *c, double complex *f,  int nTermos, int dir) {
 /**
  *
  */
-void fftrec(double complex *c, double complex *f,  int nTermos, int dir) {
+void fftrec(double complex *c, double complex *f, int nTermos, int dir) {
     int N = nTermos / 2;
 
     if (N == 1){
@@ -77,10 +77,10 @@ void fftrec(double complex *c, double complex *f,  int nTermos, int dir) {
         return;
     }
 
-    double complex *even = malloc(N * sizeof(double complex));
-    double complex *odd = malloc(N * sizeof(double complex));
-    double complex *fe = malloc(N * sizeof(double complex));
-    double complex *fo = malloc(N * sizeof(double complex));
+    double complex *even = calloc(N, sizeof(double complex));
+    double complex *odd = calloc(N, sizeof(double complex));
+    double complex *fe = calloc(N, sizeof(double complex));
+    double complex *fo = calloc(N, sizeof(double complex));
 
     for (int j = 0; j < N; j++) {
         fe[j] = f[2*j];

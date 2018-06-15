@@ -14,16 +14,25 @@
 #include "soundData.h"
 #include "soundFrequency.h"
 #include "fft.h"
+#include "filtro.h"
 
 int main() {
     printf("EP 2 - ENGENHARIA ELETRICA\n"
            "Analise harmonica e Sinais Sonoros\n\n");
 
-    char file[256] = "dados_sons/hanks_apollo_problem.dat";
-    printf("Digite o endereco do arquivo que deseja ler\n");
-    /*scanf("%256[^\n]", file);*/
+    char file[256] = "dados_sons/Piano-Sol.dat";
+    printf("Digite o nome do arquivo que deseja ler. Ele deve estar dentro da pasta \"dados_sons\"\n");
+    printf("Por exemplo: \"dog.dat\"\n");
+    printf("Arquivo: ");
+    //scanf("%256[^\n]", &file[strlen(file)]);
 
+    if (!numberOfLines(file)) {
+        printf("%s nao foi encontrado.\n", file);
 
+        return 0;
+    }
+
+/*
     double complex F[4] = {5, -1, 3, 1};
 
     double complex s[4];
@@ -39,14 +48,28 @@ int main() {
     fft2(f, s, 4, 0);
     for (int i = 0; i < 4; i++)
         printf("%f, %f\n", creal(f[i]), cimag(f[i]));
-/*
+*/
 
 
     soundData sox = readSoX(file);
     soundFrequency freq = SoX2Frequency(sox);
+
+
+
+    filtroPassaBaixa(freq.channel1, freq.size, freq.frequency, 800.0);
+    filtroPassaBaixa(freq.channel2, freq.size, freq.frequency, 800.0);
+
+    //filtroPassaAlta(freq.channel1, freq.size, freq.frequency, 800.0);
+    //filtroPassaAlta(freq.channel2, freq.size, freq.frequency, 800.0);
+
+    //filtroPassaFaixa(freq.channel1, freq.size, freq.frequency, 780.0, 800.0);
+    //filtroPassaFaixa(freq.channel2, freq.size, freq.frequency, 780.0, 800.0);
+
+    printf("%f", freq.frequency);
+
     soundData sox2 = frequency2SoX(freq);
     writeSoX("volta.dat", sox2);
-*/
+
 
     return 0;
 }

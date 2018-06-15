@@ -16,17 +16,20 @@ soundFrequency SoX2Frequency(soundData sox) {
     soundFrequency frequency;
 
     frequency.size = sox.numSamples;
-    frequency.frequency = sox.sampleRate;
+    frequency.sampleRate = sox.sampleRate;
+    frequency.frequency = (double) sox.sampleRate / sox.numSamples;
+
 
     frequency.channel1 = malloc(sox.numSamples * sizeof(double complex));
     double2complex(sox.channel1, complexChannel, sox.numSamples);
-    fftDireta(complexChannel, frequency.channel1, frequency.size);
-    //fft2(frequency.channel1, complexChannel, frequency.size, 1);
+    //fftDireta(complexChannel, frequency.channel1, frequency.size);
+    fft2(frequency.channel1, complexChannel, frequency.size, 1);
 
     if (sox.channels == 2) {
         frequency.channel2 = malloc(sox.numSamples * sizeof(double complex));
         double2complex(sox.channel2, complexChannel, sox.numSamples);
-        fftDireta(complexChannel, frequency.channel2, frequency.size);
+        //fftDireta(complexChannel, frequency.channel2, frequency.size);
+        fft2(frequency.channel2, complexChannel, frequency.size, 1);
     } else {
         frequency.channel2 = NULL;
     }
@@ -41,18 +44,19 @@ soundData frequency2SoX(soundFrequency frequency) {
     soundData sox;
 
     sox.numSamples = frequency.size;
-    sox.sampleRate = frequency.frequency;
+    sox.sampleRate = frequency.sampleRate;
     sox.channels = frequency.channel2 == NULL ? 1 : 2;
-    sox.duration = (double) frequency.size / frequency.frequency;
+    sox.duration = (double) sox.numSamples / sox.sampleRate;
 
     sox.channel1 = malloc(frequency.size * sizeof(double));
-    fftInversa(complexChannel, frequency.channel1, frequency.size);
-    //fft2(complexChannel, frequency.channel1, frequency.size, 0);
+    //fftInversa(complexChannel, frequency.channel1, frequency.size);
+    fft2(complexChannel, frequency.channel1, frequency.size, 0);
     complex2double(complexChannel, sox.channel1, frequency.size);
 
     if (sox.channels == 2) {
         sox.channel2 = malloc(frequency.size * sizeof(double));
-        fftInversa(complexChannel, frequency.channel2, frequency.size);
+        //fftInversa(complexChannel, frequency.channel2, frequency.size);
+        fft2(complexChannel, frequency.channel2, frequency.size, 0);
         complex2double(complexChannel, sox.channel2, frequency.size);
     } else {
         sox.channel2 = NULL;

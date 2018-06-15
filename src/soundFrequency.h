@@ -17,7 +17,8 @@
 #include "fft.h"
 
 typedef struct {
-    int frequency;
+    double frequency;
+    int sampleRate;
     int size;
 
     complex double *channel1;
