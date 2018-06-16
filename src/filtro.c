@@ -15,6 +15,9 @@
  *
  */
 void filtroPassaBaixa(double complex *c, int size, double freqFundamental, double corta) {
+    if (c == NULL)
+        return;
+
     int N = size / 2;
 
     for (int k = 0; k < N; k++)
@@ -26,6 +29,9 @@ void filtroPassaBaixa(double complex *c, int size, double freqFundamental, doubl
  *
  */
 void filtroPassaAlta(double complex *c, int size, double freqFundamental, double corta) {
+    if (c == NULL)
+        return;
+
     int N = size / 2;
 
     for (int k = 0; k < N; k++)
@@ -37,6 +43,9 @@ void filtroPassaAlta(double complex *c, int size, double freqFundamental, double
  *
  */
 void filtroPassaFaixa(double complex *c, int size, double freqFundamental, double freqMin, double freqMax) {
+    if (c == NULL)
+        return;
+
     int N = size / 2;
 
     for (int k = 0; k < N; k++)
@@ -49,6 +58,9 @@ void filtroPassaFaixa(double complex *c, int size, double freqFundamental, doubl
  *
  */
 void filtroRejeitaFaixa(double complex *c, int size, double freqFundamental, double freqMin, double freqMax) {
+    if (c == NULL)
+        return;
+
     int N = size / 2;
 
     for (int k = 0; k < N; k++)
@@ -59,18 +71,19 @@ void filtroRejeitaFaixa(double complex *c, int size, double freqFundamental, dou
 /**
  *
  */
-void filtroAmplitudePassaAlta(double complex *c, int size, double ampMin) {
+double compressaoRemoveAmplitude(double complex *c, int size, double ampMin) {
+    if (c == NULL)
+        return;
+
     int N = size / 2;
+    int zeros = 0;
 
-    for (int k = 0; k < N; k++)
-        if (2*cabs(c[k]) < ampMin)
+    for (int k = 0; k < N; k++) {
+        if (cabs(c[k]) && 2*cabs(c[k]) < ampMin) {
             c[k] = c[size - k - 1] = 0.0;
-}
+            zeros++;
+        }
+    }
 
-/**
- *
- */
-void compressaoAudicaoHumana(double complex *c, int size, double freqFundamental, double ampMin) {
-    filtroPassaFaixa(c, size, freqFundamental, 20, 20E3);
-    filtroAmplitudePassaAlta(c, size, ampMin);
+    return (double) zeros / size;
 }

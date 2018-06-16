@@ -35,6 +35,7 @@ soundFrequency SoX2Frequency(soundData sox, void (*fft)(complex *, complex *, in
     frequency.size = sox.numSamples;
     frequency.sampleRate = sox.sampleRate;
     frequency.frequency = (double) sox.sampleRate / sox.numSamples;
+    frequency.compressionRate = 0.0;
 
 
     frequency.channel1 = malloc(sox.numSamples * sizeof(double complex));
@@ -111,4 +112,30 @@ void double2complex(double *channel, double complex *cChannel, int size) {
 void complex2double(double complex *cChannel, double *channel, int size) {
     for (int i = 0; i < size; i++)
         channel[i] = creal(cChannel[i]);
+}
+
+void writeFrequency(char file[], soundFrequency frequency) {
+    FILE *fp = fopen(file, "w");
+
+    fprintf(fp, "; Sample Rate %d\n", frequency.sampleRate);
+    fprintf(fp, "; Channels %d\n", frequency.channel2 == NULL ? 1 : 2);
+    fprintf(fp, "; Duration %f\n", 1./frequency.frequency);
+    fprintf(fp, "; Compression rate %f\n", frequency.compressionRate);
+
+    double freq = 0.0;
+    for (int i = 0; i < frequency.size / 2; i++) {
+        if (frequency.channel1[i] == 0.0 && (frequency.channel2 == NULL || frequency.channel2[i] == 0.0))
+            continue;
+
+        fprintf(fp, " %15.8g  %15.11g ", freq, 2*cabs(frequency.channel1[i]));
+
+        if (frequency.channel2 != NULL)
+            fprintf(fp, "%15.11g ", 2*cabs(frequency.channel2[i]));
+
+        fprintf(fp, "\n");
+
+        freq += frequency.frequency;
+    }
+
+    fclose(fp);
 }

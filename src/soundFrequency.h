@@ -20,6 +20,7 @@ typedef struct {
     double frequency;
     int sampleRate;
     int size;
+    double compressionRate;
 
     complex double *channel1;
     complex double *channel2;
