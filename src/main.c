@@ -20,7 +20,7 @@ int main() {
     printf("EP 2 - ENGENHARIA ELETRICA\n"
            "Analise harmonica e Sinais Sonoros\n\n");
 
-    char file[256] = "dados_sons/Piano-Sol.dat";
+    char file[256] = "dados_sons/hanks_apollo_problem.dat";
     printf("Digite o nome do arquivo que deseja ler. Ele deve estar dentro da pasta \"dados_sons\"\n");
     printf("Por exemplo: \"dog.dat\"\n");
     printf("Arquivo: ");
@@ -52,22 +52,22 @@ int main() {
 
 
     soundData sox = readSoX(file);
-    soundFrequency freq = SoX2Frequency(sox);
+    soundFrequency freq = SoX2FrequencyDireta(sox);
 
 
 
     //filtroPassaBaixa(freq.channel1, freq.size, freq.frequency, 2000.0);
     //filtroPassaBaixa(freq.channel2, freq.size, freq.frequency, 2000.0);
 
-    filtroPassaAlta(freq.channel1, freq.size, freq.frequency, 3000.0);
-    filtroPassaAlta(freq.channel2, freq.size, freq.frequency, 3000.0);
+    //filtroPassaAlta(freq.channel1, freq.size, freq.frequency, 3000.0);
+    //filtroPassaAlta(freq.channel2, freq.size, freq.frequency, 3000.0);
 
     //filtroPassaFaixa(freq.channel1, freq.size, freq.frequency, 780.0, 800.0);
     //filtroPassaFaixa(freq.channel2, freq.size, freq.frequency, 780.0, 800.0);
 
-    printf("%f", freq.frequency);
+    //printf("%f", freq.frequency);
 
-    soundData sox2 = frequency2SoX(freq);
+    soundData sox2 = frequency2SoXDireta(freq);
     writeSoX("volta.dat", sox2);
 
 

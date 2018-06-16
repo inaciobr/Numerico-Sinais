@@ -16,7 +16,7 @@
  * 2N = nTermos
  *
  */
-void fftDireta(double complex *F, double complex *ck, int nTermos) {
+void fftDireta(double complex *c, double complex *F, int nTermos) {
     double complex odd, even, fase;
     int N = nTermos / 2;
 
@@ -31,12 +31,15 @@ void fftDireta(double complex *F, double complex *ck, int nTermos) {
 
         odd *= cexp(-1i * k * PI / N);
 
-        ck[k] = (even + odd) / nTermos;
-        ck[k + N] = (even - odd) / nTermos;
+        c[k] = (even + odd) / nTermos;
+        c[k + N] = (even - odd) / nTermos;
     }
 }
 
-void fftInversa(double complex *F, double complex *ck, int nTermos) {
+/**
+ *
+ */
+void fftInversa(double complex *F, double complex *c, int nTermos) {
     double complex odd, even, fase;
     int N = nTermos / 2;
 
@@ -45,8 +48,8 @@ void fftInversa(double complex *F, double complex *ck, int nTermos) {
 
         for (int k = 0; k < N; k++) {
             fase = cexp(1i * k * PI * j / (N/2));
-            even += ck[2*k] * fase;
-            odd += ck[2*k + 1] * fase;
+            even += c[2*k] * fase;
+            odd += c[2*k + 1] * fase;
         }
 
         odd *= cexp(1i * j * PI / N);
@@ -56,12 +59,21 @@ void fftInversa(double complex *F, double complex *ck, int nTermos) {
     }
 }
 
-void fft2(double complex *c, double complex *f,  int nTermos, int dir) {
-    fftrec(c, f, nTermos, dir);
+/**
+ *
+ */
+void fftRecursivaDireta(double complex *c, double complex *f,  int nTermos) {
+    fftrec(c, f, nTermos, 1);
 
-    if (dir)
-        for (int i = 0; i < nTermos; i++)
-            c[i] /= nTermos;
+    for (int i = 0; i < nTermos; i++)
+        c[i] /= nTermos;
+}
+
+/**
+ *
+ */
+void fftRecursivaInversa(double complex *f, double complex *c, int nTermos) {
+    fftrec(f, c, nTermos, 0);
 }
 
 /**
