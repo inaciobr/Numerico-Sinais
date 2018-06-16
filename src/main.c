@@ -56,11 +56,11 @@ int main() {
 
 
 
-    filtroPassaBaixa(freq.channel1, freq.size, freq.frequency, 800.0);
-    filtroPassaBaixa(freq.channel2, freq.size, freq.frequency, 800.0);
+    //filtroPassaBaixa(freq.channel1, freq.size, freq.frequency, 2000.0);
+    //filtroPassaBaixa(freq.channel2, freq.size, freq.frequency, 2000.0);
 
-    //filtroPassaAlta(freq.channel1, freq.size, freq.frequency, 800.0);
-    //filtroPassaAlta(freq.channel2, freq.size, freq.frequency, 800.0);
+    filtroPassaAlta(freq.channel1, freq.size, freq.frequency, 3000.0);
+    filtroPassaAlta(freq.channel2, freq.size, freq.frequency, 3000.0);
 
     //filtroPassaFaixa(freq.channel1, freq.size, freq.frequency, 780.0, 800.0);
     //filtroPassaFaixa(freq.channel2, freq.size, freq.frequency, 780.0, 800.0);

@@ -11,28 +11,48 @@
 
 #include "filtro.h"
 
-void filtroPassaBaixa(double complex *f, int size, double freqFundamental, double corta) {
-    for (int i = 0; i < size; i++) {
-        if (i*freqFundamental > corta)
-            f[i] = 0.0;
+/**
+ *
+ */
+void filtroPassaBaixa(double complex *c, int size, double freqFundamental, double corta) {
+    int N = size / 2;
+
+    for (int k = 0; k < N; k++) {
+        if (k*freqFundamental > corta)
+            c[k] = c[size - k - 1] = 0.0;
     }
 }
 
-void filtroPassaAlta(double complex *f, int size, double freqFundamental, double corta) {
-    for (int i = 0; i < size; i++)
-        if (i*freqFundamental < corta)
-            f[i] = 0.0;
+/**
+ *
+ */
+void filtroPassaAlta(double complex *c, int size, double freqFundamental, double corta) {
+    int N = size / 2;
+
+    for (int k = 0; k < N; k++)
+        if (k*freqFundamental < corta)
+            c[k] = c[size - k - 1] = 0.0;
 }
 
-void filtroPassaFaixa(double complex *f, int size, double freqFundamental, double freqMin, double freqMax) {
-    for (int i = 0; i < size; i++)
-        if (i*freqFundamental < freqMin || i*freqFundamental > freqMax)
-            f[i] = 0.0;
+/**
+ *
+ */
+void filtroPassaFaixa(double complex *c, int size, double freqFundamental, double freqMin, double freqMax) {
+    int N = size / 2;
+
+    for (int k = 0; k < N; k++)
+        if (k*freqFundamental < freqMin || k*freqFundamental > freqMax)
+            c[k] = c[size - k - 1] = 0.0;
 
 }
 
-void filtroRejeitaFaixa(double complex *f, int size, double freqFundamental, double freqMin, double freqMax) {
-    for (int i = 0; i < size; i++)
-        if (i*freqFundamental > freqMin && i*freqFundamental < freqMax)
-            f[i] = 0.0;
+/**
+ *
+ */
+void filtroRejeitaFaixa(double complex *c, int size, double freqFundamental, double freqMin, double freqMax) {
+    int N = size / 2;
+
+    for (int k = 0; k < N; k++)
+        if (k*freqFundamental > freqMin && k*freqFundamental < freqMax)
+            c[k] = c[size - k - 1] = 0.0;
 }
