@@ -17,18 +17,21 @@
 #include "soundFrequency.h"
 #include "fft.h"
 #include "filtro.h"
+#include "fftpack4.h"
 
 void testesFFT(void (*fftd)(complex *, complex *, int), void (*ffti)(complex *, complex *, int));
+void fftpack4Direta(complex *c, complex *f, int nTermos);
+void fftpack4Inversa(complex *c, complex *f, int nTermos);
 
 int main() {
     printf("EP 2 - ENGENHARIA ELETRICA\n"
            "Analise harmonica e Sinais Sonoros\n\n");
 
     char file[256] = "dados_sons/hanks_apollo_problem.dat";
-    printf("Digite o nome do arquivo que deseja ler. Ele deve estar dentro da pasta \"dados_sons\".\n");
-    printf("Por exemplo: \"dog.dat\"\n");
-    printf("Arquivo: ");
-    scanf("%256[^\n]", &file[strlen(file)]);
+    printf("Digite o nome do arquivo que deseja ler. Ele deve estar dentro da pasta \"dados_sons\".\n"
+           "Por exemplo: \"dog.dat\"\n"
+           "Arquivo: ");
+    //scanf("%256[^\n]", &file[strlen(file)]);
 
     if (!numberOfLines(file)) {
         printf("%s nao foi encontrado.\n", file);
@@ -36,9 +39,38 @@ int main() {
         return 0;
     }
 
+    int menuFFT;
+    void (*fftd)(complex *, complex *, int), (*ffti)(complex *, complex *, int);
+    printf("\nSelecione a transformada que deseja utilizar: \n"
+           "1 - Transformada lenta.\n"
+           "2 - Transformada recursiva.\n"
+           "3 - FFTPACK4.\n");
 
-    //testesFFT(&fftDireta, &fftInversa);
-    testesFFT(&fftRecursivaDireta, &fftRecursivaInversa);
+    scanf("%d", &menuFFT);
+
+    switch (menuFFT) {
+    case 1:
+        fftd = &fftDireta;
+        ffti = &fftInversa;
+        break;
+
+    case 2:
+        fftd = &fftRecursivaDireta;
+        ffti = &fftRecursivaInversa;
+        break;
+
+    case 3:
+        fftd = &fftpack4Direta;
+        ffti = &fftpack4Inversa;
+        break;
+
+    default:
+        printf("Opcao invalida.\n");
+        return 0;
+    }
+
+
+    testesFFT(fftd, ffti);
 
 /*
     soundData sox = readSoX(file);
@@ -67,6 +99,37 @@ int main() {
     return 0;
 }
 
+void fftpack4Direta(complex *c, complex *f, int nTermos) {
+    double *x = malloc(nTermos * sizeof(double));
+    complex2double(f, x, nTermos);
+
+
+    double *wSave = (double *) malloc((3*nTermos + 15) * sizeof (double));
+    int *iFac = (int *) malloc(8 * sizeof(int));
+
+    ezffti(&nTermos, wSave, iFac);
+    int N = nTermos / 2;
+
+    double *a = (double *) malloc(N * sizeof(double));
+    double *b = (double *) malloc(N * sizeof(double));
+    double aZero;
+
+    ezfftf (&nTermos, x, &aZero, a, b, wSave, iFac);
+
+
+    c[0] = aZero;
+    c[N] = a[N - 1];
+
+    for (int i = 0; i < N - 1; i++) {
+        c[i + 1] = (a[i] - 1i*b[i]) / 2.0;
+        c[2*N - i - 1] = (a[i] + 1i*b[i]) / 2.0;
+    }
+}
+
+void fftpack4Inversa(complex *f, complex *c, int nTermos) {
+    fftInversa(f, c, nTermos);
+}
+
 void testesFFT(void (*fftd)(complex *, complex *, int), void (*ffti)(complex *, complex *, int)) {
     /** TESTE 1**/
     printf("\n========================== Teste 1 ==========================\n"
@@ -76,13 +139,13 @@ void testesFFT(void (*fftd)(complex *, complex *, int), void (*ffti)(complex *, 
 
     fftd(c1, F1, 4);
     for (int i = 0; i < 4; i++)
-        printf("%.1f%+.1fi, ", creal(c1[i]), cimag(c1[i]));
+        printf("% -.1f%+.1fi, ", creal(c1[i]), cimag(c1[i]));
 
     printf("\b\b).\n\nAplicando agora a transformada inversa:\n f = (");
 
     ffti(f1, c1, 4);
     for (int i = 0; i < 4; i++)
-        printf("%.1f%+.1fi, ", creal(f1[i]), cimag(f1[i]));
+        printf("% -.1f%+.1fi, ", creal(f1[i]), cimag(f1[i]));
 
     printf("\b\b).\n\n");
 
@@ -95,13 +158,13 @@ void testesFFT(void (*fftd)(complex *, complex *, int), void (*ffti)(complex *, 
 
     fftd(c2, F2, 8);
     for (int i = 0; i < 8; i++)
-        printf("%.3f%+.3fi, ", creal(c2[i]), cimag(c2[i]));
+        printf("% -.3f%+.3fi, ", creal(c2[i]), cimag(c2[i]));
 
     printf("\b\b).\n\nAplicando agora a transformada inversa:\n f = (");
 
     ffti(f2, c2, 8);
     for (int i = 0; i < 8; i++)
-        printf("%.3f%+.3fi, ", creal(f2[i]), cimag(f2[i]));
+        printf("% -.3f%+.3fi, ", creal(f2[i]), cimag(f2[i]));
 
     printf("\b\b).\n\n\n");
 
@@ -118,13 +181,13 @@ void testesFFT(void (*fftd)(complex *, complex *, int), void (*ffti)(complex *, 
 
     fftd(c3, F3, 1024);
     for (int i = 0; i < 1024; i++)
-        printf("%.3f%+.3fi, ", creal(c3[i]), cimag(c3[i]));
+        printf("% -.3f%+.3fi, ", creal(c3[i]), cimag(c3[i]));
 
     printf("\b\b).\n\nAplicando agora a transformada inversa:\n f = (");
 
     ffti(f3, c3, 1024);
     for (int i = 0; i < 1024; i++)
-        printf("%.3f%+.3fi, ", creal(f3[i]), cimag(f3[i]));
+        printf("% -.3f%+.3fi, ", creal(f3[i]), cimag(f3[i]));
 
     printf("\b\b).\n\n\n");
 }

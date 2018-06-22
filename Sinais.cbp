@@ -35,6 +35,11 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/fft.h" />
+		<Unit filename="src/fftpack4.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/fftpack4.h" />
+		<Unit filename="src/fftpack4_precision.h" />
 		<Unit filename="src/filtro.c">
 			<Option compilerVar="CC" />
 		</Unit>

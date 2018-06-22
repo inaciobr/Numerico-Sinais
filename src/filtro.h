@@ -10,8 +10,8 @@
 #ifndef FILTRO_H_INCLUDED
 #define FILTRO_H_INCLUDED
 
+#include <stdlib.h>
 #include <complex.h>
-#include "fft.h"
 
 void filtroPassaBaixa(double complex *f, int size, double freqFundamental, double corta);
 void filtroPassaAlta(double complex *f, int size, double freqFundamental, double corta);
