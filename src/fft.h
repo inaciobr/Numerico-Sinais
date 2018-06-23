@@ -22,4 +22,7 @@ void fftRecursivaDireta(double complex *c, double complex *f,  int nTermos);
 void fftRecursivaInversa(double complex *f, double complex *c,  int nTermos);
 void fftrec(double complex *c, double complex *f,  int nTermos, int dir);
 
+void fftpack4Direta(complex *c, complex *f, int nTermos);
+void fftpack4Inversa(complex *f, complex *c, int nTermos);
+
 #endif // SOUDDATA_H_INCLUDED

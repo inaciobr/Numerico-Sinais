@@ -122,20 +122,30 @@ void writeFrequency(char file[], soundFrequency frequency) {
     fprintf(fp, "; Duration %f\n", 1./frequency.frequency);
     fprintf(fp, "; Compression rate %f\n", frequency.compressionRate);
 
+    fprintf(fp, "A = [");
+
     double freq = 0.0;
     for (int i = 0; i < frequency.size / 2; i++) {
         if (frequency.channel1[i] == 0.0 && (frequency.channel2 == NULL || frequency.channel2[i] == 0.0))
             continue;
 
-        fprintf(fp, " %15.8g  %15.11g ", freq, 2*cabs(frequency.channel1[i]));
-
-        if (frequency.channel2 != NULL)
-            fprintf(fp, "%15.11g ", 2*cabs(frequency.channel2[i]));
-
-        fprintf(fp, "\n");
+        fprintf(fp, "%.8g, ", 2*cabs(frequency.channel1[i]));
 
         freq += frequency.frequency;
     }
+    fprintf(fp, "]\n;");
+
+    fprintf(fp, "f = [");
+    freq = 0.0;
+    for (int i = 0; i < frequency.size / 2; i++) {
+        if (frequency.channel1[i] == 0.0 && (frequency.channel2 == NULL || frequency.channel2[i] == 0.0))
+            continue;
+
+        fprintf(fp, "%.8g, ", freq);
+
+        freq += frequency.frequency;
+    }
+    fprintf(fp, "];");
 
     fclose(fp);
 }

@@ -27,7 +27,7 @@ int main() {
     printf("EP 2 - ENGENHARIA ELETRICA\n"
            "Analise harmonica e Sinais Sonoros\n\n");
 
-    char file[256] = "dados_sons/hanks_apollo_problem.dat";
+    char file[256] = "dados_sons/plane.dat";
     printf("Digite o nome do arquivo que deseja ler. Ele deve estar dentro da pasta \"dados_sons\".\n"
            "Por exemplo: \"dog.dat\"\n"
            "Arquivo: ");
@@ -41,6 +41,7 @@ int main() {
 
     int menuFFT;
     void (*fftd)(complex *, complex *, int), (*ffti)(complex *, complex *, int);
+
     printf("\nSelecione a transformada que deseja utilizar: \n"
            "1 - Transformada lenta.\n"
            "2 - Transformada recursiva.\n"
@@ -70,21 +71,20 @@ int main() {
     }
 
 
-    testesFFT(fftd, ffti);
+    //testesFFT(fftd, ffti);
 
-/*
+
     soundData sox = readSoX(file);
-    soundFrequency freq = SoX2FrequencyDireta(sox);
+    soundFrequency freq = SoX2Frequency(sox, fftd);
 
     writeFrequency("freq.dat", freq);
 
 
+    //filtroPassaBaixa(freq.channel1, freq.size, freq.frequency, 25000.0 * freq.frequency);
+    //filtroPassaBaixa(freq.channel2, freq.size, freq.frequency, 25000.0 * freq.frequency);
 
-    //filtroPassaBaixa(freq.channel1, freq.size, freq.frequency, 2000.0);
-    //filtroPassaBaixa(freq.channel2, freq.size, freq.frequency, 2000.0);
-
-    //filtroPassaAlta(freq.channel1, freq.size, freq.frequency, 3000.0);
-    //filtroPassaAlta(freq.channel2, freq.size, freq.frequency, 3000.0);
+    //filtroPassaAlta(freq.channel1, freq.size, freq.frequency, 4000.0 * freq.frequency);
+    //filtroPassaAlta(freq.channel2, freq.size, freq.frequency, 4000.0 * freq.frequency);
 
     //filtroPassaFaixa(freq.channel1, freq.size, freq.frequency, 780.0, 800.0);
     //filtroPassaFaixa(freq.channel2, freq.size, freq.frequency, 780.0, 800.0);
@@ -92,43 +92,13 @@ int main() {
 
     //printf("%f", freq.frequency);
 
-    soundData sox2 = frequency2SoXDireta(freq);
+    soundData sox2 = frequency2SoX(freq, ffti);
     writeSoX("volta.dat", sox2);
 
-*/
     return 0;
 }
 
-void fftpack4Direta(complex *c, complex *f, int nTermos) {
-    double *x = malloc(nTermos * sizeof(double));
-    complex2double(f, x, nTermos);
 
-
-    double *wSave = (double *) malloc((3*nTermos + 15) * sizeof (double));
-    int *iFac = (int *) malloc(8 * sizeof(int));
-
-    ezffti(&nTermos, wSave, iFac);
-    int N = nTermos / 2;
-
-    double *a = (double *) malloc(N * sizeof(double));
-    double *b = (double *) malloc(N * sizeof(double));
-    double aZero;
-
-    ezfftf (&nTermos, x, &aZero, a, b, wSave, iFac);
-
-
-    c[0] = aZero;
-    c[N] = a[N - 1];
-
-    for (int i = 0; i < N - 1; i++) {
-        c[i + 1] = (a[i] - 1i*b[i]) / 2.0;
-        c[2*N - i - 1] = (a[i] + 1i*b[i]) / 2.0;
-    }
-}
-
-void fftpack4Inversa(complex *f, complex *c, int nTermos) {
-    fftInversa(f, c, nTermos);
-}
 
 void testesFFT(void (*fftd)(complex *, complex *, int), void (*ffti)(complex *, complex *, int)) {
     /** TESTE 1**/

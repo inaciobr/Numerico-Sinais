@@ -116,30 +116,74 @@ void fftrec(double complex *c, double complex *f, int nTermos, int dir) {
     free(fo);
 }
 
+/**
+ *
+ */
+void fftpack4Direta(complex *c, complex *f, int nTermos) {
+    double *wSave = (double *) malloc((3*nTermos + 15) * sizeof (double));
+    int *iFac = (int *) malloc(8 * sizeof(int));
+    ezffti(&nTermos, wSave, iFac);
 
 
-/*
-fftrec(c,f,n,dir)
-complexos f(0:2n-1),c(0:2n-1),even(0:n-1),odd(0:n-1),fe(0:n-1),fo(0:n-1)
-logico dir
-Se n=1 ent˜ao
-c(0) = f(0)+f(1)
-c(1) = f(0)-f(1)
-sen˜ao
-para j=0,n-1
-fe(j)=f(2j)
-fo(j)=f(2j+1)
-fim do para
-fftrec(even,fe,n/2,dir)
-fftrec(odd ,fo,n/2,dir)
-para j=0,n-1
-se (dir) ent˜ao
-eij = exp(- i * j * pi / n)
-sen˜ao
-eij = exp(i * j * pi / n)
-fim do se
-c(j) = even(j)+eij * odd(j)
-c(j+n) = even(j)-eij * odd(j)
-fim do para
-fim do se
-*/
+    int N = nTermos / 2;
+    double aZero;
+    double *x = (double *) malloc(nTermos * sizeof(double));
+    double *a = (double *) malloc(N * sizeof(double));
+    double *b = (double *) malloc(N * sizeof(double));
+
+    complex2double(f, x, nTermos);
+    ezfftf (&nTermos, x, &aZero, a, b, wSave, iFac);
+
+
+    c[0] = aZero;
+    c[N] = a[N - 1];
+
+    for (int i = 0; i < N - 1; i++) {
+        c[i + 1] = (a[i] - 1i*b[i]) / 2.0;
+        c[2*N - i - 1] = (a[i] + 1i*b[i]) / 2.0;
+    }
+
+    free(a);
+    free(b);
+    free(iFac);
+    free(wSave);
+    free(x);
+}
+
+/**
+ *
+ */
+void fftpack4Inversa(complex *f, complex *c, int nTermos) {
+    double *wSave = (double *) malloc((3*nTermos + 15) * sizeof (double));
+    int *iFac = (int *) malloc(8 * sizeof(int));
+    ezffti(&nTermos, wSave, iFac);
+
+
+    int N = nTermos / 2;
+    double aZero;
+    double *x = (double *) malloc(nTermos * sizeof(double));
+    double *a = (double *) malloc(N * sizeof(double));
+    double *b = (double *) malloc(N * sizeof(double));
+
+
+    aZero = c[0];
+    a[N - 1] = c[N];
+
+    for (int i = 0; i < N - 1; i++) {
+        a[i] =  2.0 * creal(c[i + 1]);
+        b[i] = -2.0 * cimag(c[i + 1]);
+    }
+
+    ezfftb (&nTermos, x, &aZero, a, b, wSave, iFac);
+
+    for (int i = 0; i < N; i++) {
+        f[i] = x[i];
+        f[i + N] = x[i + N];
+    }
+
+    free(a);
+    free(b);
+    free(iFac);
+    free(wSave);
+    free(x);
+}
