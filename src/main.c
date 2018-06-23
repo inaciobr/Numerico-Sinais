@@ -9,9 +9,11 @@
 * Funções principal do programa.                            *
 * Realiza a interação com o usuário.                        *
 ************************************************************/
+
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 
 #include "soundData.h"
 #include "soundFrequency.h"
@@ -70,18 +72,18 @@ int main() {
         return 0;
     }
 
+    clock_t startTime = clock();
 
     //testesFFT(fftd, ffti);
 
 
-    soundData sox = readSoX(file);
+    soundData sox = readSoX(file, 1);
     soundFrequency freq = SoX2Frequency(sox, fftd);
 
-    writeFrequency("freq.dat", freq);
 
 
-    //filtroPassaBaixa(freq.channel1, freq.size, freq.frequency, 25000.0 * freq.frequency);
-    //filtroPassaBaixa(freq.channel2, freq.size, freq.frequency, 25000.0 * freq.frequency);
+    filtroPassaBaixa(freq.channel1, freq.sizeChannel, freq.frequency, 25000.0 * freq.frequency);
+    filtroPassaBaixa(freq.channel2, freq.sizeChannel, freq.frequency, 25000.0 * freq.frequency);
 
     //filtroPassaAlta(freq.channel1, freq.size, freq.frequency, 4000.0 * freq.frequency);
     //filtroPassaAlta(freq.channel2, freq.size, freq.frequency, 4000.0 * freq.frequency);
@@ -93,11 +95,15 @@ int main() {
     //printf("%f", freq.frequency);
 
     soundData sox2 = frequency2SoX(freq, ffti);
+
+    printf("Tempo para executar a funcao fft: %.3f", (double)(clock() - startTime) / CLOCKS_PER_SEC);
+
+    writeFrequency("freq.dat", freq);
     writeSoX("volta.dat", sox2);
+
 
     return 0;
 }
-
 
 
 void testesFFT(void (*fftd)(complex *, complex *, int), void (*ffti)(complex *, complex *, int)) {

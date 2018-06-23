@@ -62,7 +62,7 @@ void fftInversa(double complex *F, double complex *c, int nTermos) {
 /**
  *
  */
-void fftRecursivaDireta(double complex *c, double complex *f,  int nTermos) {
+void fftRecursivaDireta(double complex *c, double complex *f, int nTermos) {
     fftrec(c, f, nTermos, 1);
 
     for (int i = 0; i < nTermos; i++)

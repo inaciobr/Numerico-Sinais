@@ -11,7 +11,10 @@
 #define FFT_H_INCLUDED
 
 #include <complex.h>
+#include <math.h>
 #include <stdlib.h>
+
+#include "fftpack4.h"
 
 #define PI  3.14159265358979323846
 

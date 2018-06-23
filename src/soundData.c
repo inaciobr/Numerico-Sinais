@@ -16,9 +16,10 @@
  *
  *
  */
-soundData readSoX(char file[]) {
-    int lines = numberOfLines(file) - 2;
+soundData readSoX(char file[], int power2) {
     soundData sox;
+
+    int lines = numberOfLines(file) - 2;
 
     if (!lines) {
 		freeSoX(&sox);
@@ -30,10 +31,12 @@ soundData readSoX(char file[]) {
     fscanf(fp, "; Sample Rate %d\n", &sox.sampleRate);
     fscanf(fp, "; Channels %d\n", &sox.channels);
 
-    sox.channel1 = malloc((lines) * sizeof(double));
-    sox.channel2 = sox.channels == 2 ? malloc((lines) * sizeof(double)) : NULL;
-    sox.duration = (double)(lines - 1) / sox.sampleRate;
     sox.numSamples = lines;
+    sox.sizeChannel = power2 ? nearestPower2(lines) : lines;
+
+    sox.channel1 = malloc(sox.sizeChannel * sizeof(double));
+    sox.channel2 = sox.channels == 2 ? malloc(sox.sizeChannel * sizeof(double)) : NULL;
+    sox.duration = (double)(lines - 1) / sox.sampleRate;
 
     for (int i = 0; i < lines; i++) {
         fscanf(fp, "%*f %lf", &sox.channel1[i]);
@@ -43,6 +46,13 @@ soundData readSoX(char file[]) {
     }
 
     fclose(fp);
+
+    if (power2) {
+        completaPotencia2(sox.channel1, sox.numSamples, sox.sizeChannel);
+
+        if (sox.channels == 2)
+            completaPotencia2(sox.channel2, sox.numSamples, sox.sizeChannel);
+    }
 
     return sox;
 }
@@ -89,6 +99,7 @@ void freeSoX(soundData *sox) {
     sox->channel1 = NULL;
     sox->channel2 = NULL;
     sox->duration = 0.0;
+    sox->sizeChannel = 0;
 }
 
 /**
@@ -110,4 +121,32 @@ int numberOfLines(char file[]) {
     fclose(fp);
 
     return lines;
+}
+
+/**
+ * Margem de 25% ????
+ */
+int nearestPower2(int N) {
+	int nPower2 = 1 << (int) log2(N);
+
+	if (N > 1. * nPower2)
+        nPower2 <<= 1;
+
+	return nPower2;
+}
+
+double calculaMedia(double *f, int nTermos) {
+	double soma = 0.0;
+
+	for (int i = 0; i < nTermos; i++)
+		soma += f[i];
+
+	return soma / nTermos;
+}
+
+void completaPotencia2(double *F, int tamanhoAntigo, int tamanhoNovo) {
+	double complex avg = calculaMedia(F, tamanhoAntigo);
+
+    for (int i = tamanhoAntigo; i < tamanhoNovo; i++)
+		F[i] = avg;
 }

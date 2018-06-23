@@ -19,19 +19,15 @@
 typedef struct {
     double frequency;
     int sampleRate;
-    int size;
+    int numSamples;
+    int sizeChannel;
     double compressionRate;
 
     complex double *channel1;
     complex double *channel2;
 } soundFrequency;
 
-soundFrequency SoX2FrequencyDireta(soundData sox);
-soundFrequency SoX2FrequencyRecursiva(soundData sox);
 soundFrequency SoX2Frequency(soundData sox, void (*fft)(complex *, complex *, int));
-
-soundData frequency2SoXDireta(soundFrequency frequency);
-soundData frequency2SoXRecursiva(soundFrequency frequency);
 soundData frequency2SoX(soundFrequency frequency, void (*fft)(complex *, complex *, int));
 
 void double2complex(double *channel, double complex *cChannel, int size) ;
