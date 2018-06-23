@@ -51,7 +51,6 @@ void filtroPassaFaixa(double complex *c, int size, double freqFundamental, doubl
     for (int k = 0; k < N; k++)
         if (k*freqFundamental < freqMin || k*freqFundamental > freqMax)
             c[k] = c[size - k - 1] = 0.0;
-
 }
 
 /**
