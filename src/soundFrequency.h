@@ -14,7 +14,6 @@
 #include <stdlib.h>
 
 #include "soundData.h"
-#include "fft.h"
 
 typedef struct {
     double frequency;
@@ -30,7 +29,9 @@ typedef struct {
 soundFrequency SoX2Frequency(soundData sox, void (*fft)(complex *, complex *, int));
 soundData frequency2SoX(soundFrequency frequency, void (*fft)(complex *, complex *, int));
 
-void double2complex(double *channel, double complex *cChannel, int size) ;
-void complex2double(double complex *cChannel, double *channel, int size) ;
+void double2complex(double *channel, double complex *cChannel, int size);
+void complex2double(double complex *cChannel, double *channel, int size);
 
+
+void writeFrequency(char file[], soundFrequency frequency);
 #endif // SOUNDFREQUENCY_H_INCLUDED

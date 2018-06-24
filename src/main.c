@@ -111,7 +111,6 @@ int main() {
         menuFiltro = 0;
     }
 
-
     int menuCompressao;
     double ampMin;
     printf("\nEscolha o tipo de compressao desejada: \n"
@@ -165,7 +164,6 @@ int main() {
     }
 
     soundData sox2 = frequency2SoX(freq, ffti);
-
     printf("\nTempo para executar a funcao fft: %.3f\n", (double)(clock() - startTime) / CLOCKS_PER_SEC);
 
     writeFrequency("frequencias.dat", freq);
@@ -188,7 +186,7 @@ void testesFFT(void (*fftd)(complex *, complex *, int), void (*ffti)(complex *, 
 
     if (menuTestes < 1 || menuTestes > 3) {
         printf("Teste inválido.");
-        return 0;
+        return;
     }
 
     int N;

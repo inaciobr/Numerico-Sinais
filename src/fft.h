@@ -15,6 +15,7 @@
 #include <stdlib.h>
 
 #include "fftpack4.h"
+#include "soundFrequency.h"
 
 #define PI  3.14159265358979323846
 

@@ -12,8 +12,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "fft.h"
+#include <math.h>
+#include <complex.h>
 
 typedef struct {
     int sampleRate;

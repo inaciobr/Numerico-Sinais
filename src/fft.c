@@ -130,7 +130,6 @@ void fftpack4Direta(complex *c, complex *f, int nTermos) {
     int *iFac = (int *) malloc(8 * sizeof(int));
     ezffti(&nTermos, wSave, iFac);
 
-
     int N = nTermos / 2;
     double aZero;
     double *x = (double *) malloc(nTermos * sizeof(double));
@@ -166,13 +165,11 @@ void fftpack4Inversa(complex *f, complex *c, int nTermos) {
     int *iFac = (int *) malloc(8 * sizeof(int));
     ezffti(&nTermos, wSave, iFac);
 
-
     int N = nTermos / 2;
     double aZero;
     double *x = (double *) malloc(nTermos * sizeof(double));
     double *a = (double *) malloc(N * sizeof(double));
     double *b = (double *) malloc(N * sizeof(double));
-
 
     aZero = c[0];
     a[N - 1] = c[N];
