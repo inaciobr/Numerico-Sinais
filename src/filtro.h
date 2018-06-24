@@ -13,11 +13,11 @@
 #include <stdlib.h>
 #include <complex.h>
 
-void filtroPassaBaixa(double complex *f, int size, double freqFundamental, double corta);
-void filtroPassaAlta(double complex *f, int size, double freqFundamental, double corta);
+void filtroPassaBaixa(double complex *c, int size, double indexMax);
+void filtroPassaAlta(double complex *c, int size, double indexMin);
 
-void filtroPassaFaixa(double complex *f, int size, double freqFundamental, double freqMin, double freqMax);
-void filtroRejeitaFaixa(double complex *f, int size, double freqFundamental, double freqMin, double freqMax);
+void filtroPassaFaixa(double complex *c, int size, double indexMin, double indexMax);
+void filtroRejeitaFaixa(double complex *c, int size, double indexMin, double indexMax);
 
 void compressaoAudicaoHumana(double complex *c, int size, double freqFundamental, double ampMin);
 

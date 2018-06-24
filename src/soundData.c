@@ -13,8 +13,8 @@
 #include "soundData.h"
 
 /**
- *
- *
+ * Inicializa a struct soundData com os valores lidos
+ * de um arquivo .dat no formato do software SoX.
  */
 soundData readSoX(char file[], int power2) {
     soundData sox;
@@ -58,8 +58,8 @@ soundData readSoX(char file[], int power2) {
 }
 
 /**
- *
- *
+ * Escreve um arquivo .dat em formato que pode ser lido pelo
+ * software SoX com base nos dados armazenados na struct soundData.
  */
 void writeSoX(char file[], soundData sox) {
     FILE *fp = fopen(file, "w");
@@ -83,8 +83,8 @@ void writeSoX(char file[], soundData sox) {
 }
 
 /**
- *
- *
+ * Libera o espaço alocado para construir uma
+ * struct soundData.
  */
 void freeSoX(soundData *sox) {
     if (sox->channel1 != NULL)
@@ -103,8 +103,7 @@ void freeSoX(soundData *sox) {
 }
 
 /**
- *
- *
+ * Função para obter o número de linhas de um arquivo.
  */
 int numberOfLines(char file[]) {
     FILE *fp = fopen(file, "r");
@@ -124,7 +123,7 @@ int numberOfLines(char file[]) {
 }
 
 /**
- * Margem de 25% ????
+ * Encontra a menor potência de dois superior a um número N.
  */
 int nearestPower2(int N) {
 	int nPower2 = 1 << (int) log2(N);
@@ -135,6 +134,9 @@ int nearestPower2(int N) {
 	return nPower2;
 }
 
+/**
+ * Calcula a média dos valores de um sinal.
+ */
 double calculaMedia(double *f, int nTermos) {
 	double soma = 0.0;
 
@@ -144,6 +146,10 @@ double calculaMedia(double *f, int nTermos) {
 	return soma / nTermos;
 }
 
+/**
+ * Preenche os novos valores de um sinal transformado
+ * para potência de 2 com a média deste sinal.
+ */
 void completaPotencia2(double *F, int tamanhoAntigo, int tamanhoNovo) {
 	double complex avg = calculaMedia(F, tamanhoAntigo);
 

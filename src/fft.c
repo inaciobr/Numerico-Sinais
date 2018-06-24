@@ -38,6 +38,7 @@ void fftDireta(double complex *c, double complex *F, int nTermos) {
 
 /**
  *
+ *
  */
 void fftInversa(double complex *F, double complex *c, int nTermos) {
     double complex odd, even, fase;
@@ -61,6 +62,7 @@ void fftInversa(double complex *F, double complex *c, int nTermos) {
 
 /**
  *
+ *
  */
 void fftRecursivaDireta(double complex *c, double complex *f, int nTermos) {
     fftrec(c, f, nTermos, 1);
@@ -71,12 +73,14 @@ void fftRecursivaDireta(double complex *c, double complex *f, int nTermos) {
 
 /**
  *
+ *
  */
 void fftRecursivaInversa(double complex *f, double complex *c, int nTermos) {
     fftrec(f, c, nTermos, 0);
 }
 
 /**
+ *
  *
  */
 void fftrec(double complex *c, double complex *f, int nTermos, int dir) {
@@ -118,6 +122,7 @@ void fftrec(double complex *c, double complex *f, int nTermos, int dir) {
 
 /**
  *
+ *
  */
 void fftpack4Direta(complex *c, complex *f, int nTermos) {
     double *wSave = (double *) malloc((3*nTermos + 15) * sizeof (double));
@@ -151,6 +156,7 @@ void fftpack4Direta(complex *c, complex *f, int nTermos) {
 }
 
 /**
+ *
  *
  */
 void fftpack4Inversa(complex *f, complex *c, int nTermos) {

@@ -6,7 +6,8 @@
 *************************************************************
 * src/soundFrequency.c                                      *
 *************************************************************
-*                                                           *
+* Funções relacionadas ao tratamento de dados de um arquivo *
+* de som no domínio da frequência.                          *
 ************************************************************/
 
 #include "soundFrequency.h"

@@ -6,68 +6,74 @@
 *************************************************************
 * src/filtro.c                                              *
 *************************************************************
-*                                                           *
+* Funções relacionadas a filtragem de frequências.          *
 ************************************************************/
 
 #include "filtro.h"
 
 /**
  *
+ *
  */
-void filtroPassaBaixa(double complex *c, int size, double freqFundamental, double corta) {
+void filtroPassaBaixa(double complex *c, int size, double indexMax) {
     if (c == NULL)
         return;
 
     int N = size / 2;
 
     for (int k = 0; k < N; k++)
-        if (k*freqFundamental > corta)
+        if (k > indexMax)
             c[k] = c[size - k - 1] = 0.0;
 }
 
 /**
  *
+ *
  */
-void filtroPassaAlta(double complex *c, int size, double freqFundamental, double corta) {
+void filtroPassaAlta(double complex *c, int size, double indexMin) {
     if (c == NULL)
         return;
 
     int N = size / 2;
 
-    for (int k = 0; k < N; k++)
-        if (k*freqFundamental < corta)
+    /* Não corta a frequência de índice zero, associada ao termo constante. */
+    for (int k = 1; k < N; k++)
+        if (k < indexMin)
             c[k] = c[size - k - 1] = 0.0;
 }
 
 /**
  *
+ *
  */
-void filtroPassaFaixa(double complex *c, int size, double freqFundamental, double freqMin, double freqMax) {
+void filtroPassaFaixa(double complex *c, int size, double indexMin, double indexMax) {
     if (c == NULL)
         return;
 
     int N = size / 2;
 
     for (int k = 0; k < N; k++)
-        if (k*freqFundamental < freqMin || k*freqFundamental > freqMax)
+        if (k < indexMin || k > indexMax)
             c[k] = c[size - k - 1] = 0.0;
 }
 
 /**
  *
+ *
  */
-void filtroRejeitaFaixa(double complex *c, int size, double freqFundamental, double freqMin, double freqMax) {
+void filtroRejeitaFaixa(double complex *c, int size, double indexMin, double indexMax) {
     if (c == NULL)
         return;
 
     int N = size / 2;
 
     for (int k = 0; k < N; k++)
-        if (k*freqFundamental > freqMin && k*freqFundamental < freqMax)
+        if (k > indexMin && k < indexMax)
             c[k] = c[size - k - 1] = 0.0;
 }
 
 /**
+ *
  *
  */
 double compressaoRemoveAmplitude(double complex *c, int size, double ampMin) {
@@ -84,5 +90,5 @@ double compressaoRemoveAmplitude(double complex *c, int size, double ampMin) {
         }
     }
 
-    return (double) zeros / size;
+    return (double) zeros / N;
 }

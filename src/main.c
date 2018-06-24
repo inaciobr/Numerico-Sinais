@@ -22,35 +22,29 @@
 #include "fftpack4.h"
 
 void testesFFT(void (*fftd)(complex *, complex *, int), void (*ffti)(complex *, complex *, int));
-void fftpack4Direta(complex *c, complex *f, int nTermos);
-void fftpack4Inversa(complex *c, complex *f, int nTermos);
 
 int main() {
-    char dir[256] = "dados_sons/";
     char file[256];
     printf("EP 2 - ENGENHARIA ELETRICA\n"
            "Analise harmonica e Sinais Sonoros\n\n");
 
 
-    printf("Digite o nome do arquivo que deseja ler. Ele deve estar dentro da pasta \"dados_sons\".\n"
-           "Por exemplo: \"dog.dat\". Voce pode digitar \"Teste\" para visualizar os testes iniciais.\n"
+    printf("Digite o nome do arquivo que deseja ler.\n"
+           "Por exemplo: \"dados_sons/dog.dat\".\n Voce pode digitar \"teste\" para visualizar os testes iniciais.\n"
            "Arquivo: ");
     scanf("%256[^\n]", file);
 
 
-    if (strcmp(file, "teste")) {
-        strcat(dir, file);
+    FILE *fp = fopen(file, "r");
+    fclose(fp);
 
-        if (!numberOfLines(dir)) {
-            printf("%s nao foi encontrado.\n", dir);
-            return 0;
-        }
+    if (strcmp(file, "teste") && fp == NULL) {
+        printf("%s nao foi encontrado.\n", file);
+        return 0;
     }
-
 
     int menuFFT;
     void (*fftd)(complex *, complex *, int), (*ffti)(complex *, complex *, int);
-
     printf("\nSelecione a transformada que deseja utilizar: \n"
            "1 - Transformada lenta.\n"
            "2 - Transformada recursiva.\n"
@@ -85,30 +79,93 @@ int main() {
         return 0;
     }
 
+    int menuFiltro, K1, K2;
+    printf("\nSelecione um filtro para aplicar: \n"
+           "0 - Sem filtros.\n"
+           "1 - Filtro passa-baixa.\n"
+           "2 - Filtro passa-alta.\n"
+           "3 - Filtro passa-banda.\n"
+           "4 - Filtro corta-banda.\n");
+    scanf("%d", &menuFiltro);
+
+    switch (menuFiltro) {
+    case 0:
+        break;
+
+    case 1:
+    case 2:
+        printf("Digite o valor do indice K do filtro.");
+        scanf("%d", &K1);
+        break;
+
+    case 3:
+    case 4:
+        printf("Digite o valor do menor indice K1.");
+        scanf("%d", &K1);
+        printf("Digite o valor do maior indice K2.");
+        scanf("%d", &K2);
+        break;
+
+    default:
+        printf("Opção de filtro inválida. O sinal será analisado sem a aplicação de filtros.");
+        menuFiltro = 0;
+    }
+
+
+    int menuCompressao;
+    double ampMin;
+    printf("\nEscolha o tipo de compressao desejada: \n"
+           "0 - Sem compressao.\n"
+           "1 - Compressao cortando baixas amplitudes.\n");
+    scanf("%d", &menuCompressao);
+
+    if (menuCompressao == 1) {
+        printf("\nDigite o valor \"e\" de corte da amplitude: ");
+        scanf("%f", &ampMin);
+    }
+
     clock_t startTime = clock();
 
-    //testesFFT(fftd, ffti);
-
-
-    soundData sox = readSoX(dir, 1);
+    soundData sox = readSoX(file, 1);
     soundFrequency freq = SoX2Frequency(sox, fftd);
 
+    switch (menuFiltro) {
+    case 1:
+        filtroPassaBaixa(freq.channel1, freq.sizeChannel, K1);
+        filtroPassaBaixa(freq.channel2, freq.sizeChannel, K1);
+        break;
 
-    filtroPassaBaixa(freq.channel1, freq.sizeChannel, freq.frequency, 25000.0 * freq.frequency);
-    filtroPassaBaixa(freq.channel2, freq.sizeChannel, freq.frequency, 25000.0 * freq.frequency);
+    case 2:
+        filtroPassaAlta(freq.channel1, freq.sizeChannel, K1);
+        filtroPassaAlta(freq.channel2, freq.sizeChannel, K1);
+        break;
 
-    //filtroPassaAlta(freq.channel1, freq.size, freq.frequency, 4000.0 * freq.frequency);
-    //filtroPassaAlta(freq.channel2, freq.size, freq.frequency, 4000.0 * freq.frequency);
+    case 3:
+        filtroPassaFaixa(freq.channel1, freq.sizeChannel, K1, K2);
+        filtroPassaFaixa(freq.channel2, freq.sizeChannel, K1, K2);
+        break;
 
-    //filtroPassaFaixa(freq.channel1, freq.size, freq.frequency, 780.0, 800.0);
-    //filtroPassaFaixa(freq.channel2, freq.size, freq.frequency, 780.0, 800.0);
+    case 4:
+        filtroRejeitaFaixa(freq.channel1, freq.sizeChannel, K1, K2);
+        filtroRejeitaFaixa(freq.channel2, freq.sizeChannel, K1, K2);
+        break;
+    }
 
+    if (menuCompressao == 1) {
+        double comp;
 
-    //printf("%f", freq.frequency);
+        comp = compressaoRemoveAmplitude(freq.channel1, freq.sizeChannel, ampMin);
+        printf("\nCompressao de %.3f%% no canal 1.\n", 100. * comp);
+
+        if (freq.channel2 != NULL) {
+            comp = compressaoRemoveAmplitude(freq.channel1, freq.sizeChannel, ampMin);
+            printf("Compressao de %.3f%% no canal 2.\n", 100. * comp);
+        }
+    }
 
     soundData sox2 = frequency2SoX(freq, ffti);
 
-    printf("Tempo para executar a funcao fft: %.3f\n", (double)(clock() - startTime) / CLOCKS_PER_SEC);
+    printf("\nTempo para executar a funcao fft: %.3f\n", (double)(clock() - startTime) / CLOCKS_PER_SEC);
 
     writeFrequency("freq.dat", freq);
     writeSoX("volta.dat", sox2);
@@ -117,7 +174,9 @@ int main() {
     return 0;
 }
 
-
+/**
+ *
+ */
 void testesFFT(void (*fftd)(complex *, complex *, int), void (*ffti)(complex *, complex *, int)) {
     clock_t startTime, endTime;
     /** TESTE 1**/
