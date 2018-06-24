@@ -14,6 +14,9 @@
 /**
  *
  * 2N = nTermos
+  NESTA SE DA O PROCESSO INVERSO DA FFT, TEM COMO PARÂMETRO O VETOR REAL
+ DE APLITUDES E, APLICANDO O ALGORITMO DADO NO ROTEIRO, VOLTA PARA O VETOR
+ COMPLEXO DA TRANSFORMADA
  *
  */
 void fftDireta(double complex *c, double complex *F, int nTermos) {
@@ -38,6 +41,9 @@ void fftDireta(double complex *c, double complex *F, int nTermos) {
 
 /**
  *
+ NESTA SE DA O PROCESSO INVERSO DA FFT, TEM COMO PARÂMETRO O VETOR COMPLEXO
+ DA TRANSFORMADA E, APLICANDO O ALGORITMO DADO NO ROTEIRO, VOLTA PARA O VETOR
+ REAL DE AMPLITUDE
  *
  */
 void fftInversa(double complex *F, double complex *c, int nTermos) {
@@ -62,6 +68,8 @@ void fftInversa(double complex *F, double complex *c, int nTermos) {
 
 /**
  *
+ UTILIZANDO  A RECURSIVA DADA, NESTA FUNÇÃO TÊM-SE A OPÇÃO
+ DE SE CHAMAR A SUA FORMA DIRETA
  *
  */
 void fftRecursivaDireta(double complex *c, double complex *f, int nTermos) {
@@ -73,6 +81,8 @@ void fftRecursivaDireta(double complex *c, double complex *f, int nTermos) {
 
 /**
  *
+ UTILIZANDO  A RECURSIVA DADA, NESTA FUNÇÃO TÊM-SE A OPÇÃO
+ DE SE CHAMAR A SUA FORMA INVERSA
  *
  */
 void fftRecursivaInversa(double complex *f, double complex *c, int nTermos) {
@@ -81,6 +91,7 @@ void fftRecursivaInversa(double complex *f, double complex *c, int nTermos) {
 
 /**
  *
+ AQUI SE APLICA O ALGORITMO RECURSIVO DADO NO ROTEIRO
  *
  */
 void fftrec(double complex *c, double complex *f, int nTermos, int dir) {
@@ -122,6 +133,8 @@ void fftrec(double complex *c, double complex *f, int nTermos, int dir) {
 
 /**
  *
+ NESTA FUNÇÃO, COM BASE NO LINK DADO PARA A FFTPACK4, PODE-SE CALCULAR
+ A TRANSFORMADA DE UM MANEIRA MUITO OTIMIZADA
  *
  */
 void fftpack4Direta(complex *c, complex *f, int nTermos) {
@@ -157,6 +170,9 @@ void fftpack4Direta(complex *c, complex *f, int nTermos) {
 
 /**
  *
+ NESTA FUNÇÃO, COM BASE NO LINK DADO PARA A FFTPACK4, PODE-SE CALCULAR
+ O VETOR NO DOMINIO DO TEMPO DE UM MANEIRA MUITO OTIMIZADA,A PARTIR DA
+ TRANSFORMADA DESSE SINAL
  *
  */
 void fftpack4Inversa(complex *f, complex *c, int nTermos) {
