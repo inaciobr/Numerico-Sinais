@@ -30,7 +30,7 @@ int main() {
 
 
     printf("Digite o nome do arquivo que deseja ler.\n"
-           "Por exemplo: \"dados_sons/dog.dat\".\n Voce pode digitar \"teste\" para visualizar os testes iniciais.\n"
+           "Por exemplo: \"dados_sons/dog.dat\".\nVoce pode digitar \"teste\" para visualizar os testes iniciais.\n"
            "Arquivo: ");
     scanf("%256[^\n]", file);
 
@@ -121,7 +121,7 @@ int main() {
 
     if (menuCompressao == 1) {
         printf("\nDigite o valor \"e\" de corte da amplitude: ");
-        scanf("%f", &ampMin);
+        scanf("%lf", &ampMin);
     }
 
     clock_t startTime = clock();
@@ -155,6 +155,7 @@ int main() {
         double comp;
 
         comp = compressaoRemoveAmplitude(freq.channel1, freq.sizeChannel, ampMin);
+
         printf("\nCompressao de %.3f%% no canal 1.\n", 100. * comp);
 
         if (freq.channel2 != NULL) {
@@ -167,8 +168,8 @@ int main() {
 
     printf("\nTempo para executar a funcao fft: %.3f\n", (double)(clock() - startTime) / CLOCKS_PER_SEC);
 
-    writeFrequency("freq.dat", freq);
-    writeSoX("volta.dat", sox2);
+    writeFrequency("frequencias.dat", freq);
+    writeSoX("novoAudio.dat", sox2);
 
 
     return 0;
@@ -178,78 +179,84 @@ int main() {
  *
  */
 void testesFFT(void (*fftd)(complex *, complex *, int), void (*ffti)(complex *, complex *, int)) {
-    clock_t startTime, endTime;
-    /** TESTE 1**/
-    printf("\n========================== Teste 1 ==========================\n"
-           "Transformada de uma funcao com os seguintes valores em 0, pi/2, pi e 3*pi/2: (5, -1, 3, 1)\n c = (");
-    double complex F1[4] = {5, -1, 3, 1};
-    double complex c1[4] = {}, f1[4] = {};
+    int menuTestes;
+    printf("\nEscolha qual teste deseja visualizar: \n"
+           "1 - Teste 1.\n"
+           "2 - Teste 2.\n"
+           "3 - Teste 3.\n");
+    scanf("%d", &menuTestes);
 
-    startTime = clock();
-    fftd(c1, F1, 4);
-    ffti(f1, c1, 4);
-    endTime = clock();
-
-    for (int i = 0; i < 4; i++)
-        printf("% -.1f%+.1fi, ", creal(c1[i]), cimag(c1[i]));
-
-    printf("\b\b).\n\nAplicando agora a transformada inversa:\n f = (");
-
-    for (int i = 0; i < 4; i++)
-        printf("% -.1f%+.1fi, ", creal(f1[i]), cimag(f1[i]));
-
-    printf("\b\b).\n");
-    printf("Tempo para executar a funcao fft: %.3f s\n\n", (double)(endTime - startTime) / CLOCKS_PER_SEC);
-
-
-
-    /** TESTE 2**/
-    printf("\n========================== Teste 2 ==========================\n"
-           "Transformada de uma funcao com os seguintes valores:  F = (6, 2, 5, 2, 11, 2, 8, 8)\n c = (");
-    double complex F2[8] = {6, 2, 5, 2, 11, 2, 8, 8};
-    double complex c2[8] = {}, f2[8] = {};
-
-    startTime = clock();
-    fftd(c2, F2, 8);
-    ffti(f2, c2, 8);
-    endTime = clock();
-
-    for (int i = 0; i < 8; i++)
-        printf("% -.3f%+.3fi, ", creal(c2[i]), cimag(c2[i]));
-
-    printf("\b\b).\n\nAplicando agora a transformada inversa:\n f = (");
-
-    for (int i = 0; i < 8; i++)
-        printf("% -.3f%+.3fi, ", creal(f2[i]), cimag(f2[i]));
-
-    printf("\b\b).\n");
-    printf("Tempo para executar a funcao fft: %.3f s\n\n", (double)(endTime - startTime) / CLOCKS_PER_SEC);
-
-
-    /** TESTE 3**/
-    printf("========================== Teste 3 ==========================\n"
-           "Transformada de uma funcao F(x) = 10sin(x) + 7cos(30x) + 11sin(352x) - 8cos(711x)\n c = (");
-    double complex F3[1024] = {}, c3[1024] = {}, f3[1024] = {};
-
-    for (int j = 0; j < 1024; j++) {
-        double x = j * PI / 512.;
-        F3[j] = 10*sin(x) + 7*cos(30*x) + 11*sin(352*x) - 8*cos(711*x);
+    if (menuTestes < 1 || menuTestes > 3) {
+        printf("Teste inválido.");
+        return 0;
     }
 
+    int N;
+    clock_t startTime, endTime;
+
+    printf("\n========================== Teste %d ==========================\n", menuTestes);
+    double complex *F, *c, *f;
+
+    switch (menuTestes) {
+    case 1:
+        printf("Transformada de uma funcao com os seguintes valores em 0, pi/2, pi e 3*pi/2: (5, -1, 3, 1)\n");
+
+        double complex F1[4] = {5, -1, 3, 1};
+        double complex c1[4] = {}, f1[4] = {};
+
+        N = 4;
+        F = F1;
+        c = c1;
+        f = f1;
+
+        break;
+
+
+    case 2:
+        printf("Transformada de uma funcao com os seguintes valores:  F = (6, 2, 5, 2, 11, 2, 8, 8)\n");
+
+        double complex F2[8] = {6, 2, 5, 2, 11, 2, 8, 8};
+        double complex c2[8] = {}, f2[8] = {};
+
+        N = 8;
+        F = F2;
+        c = c2;
+        f = f2;
+
+        break;
+
+    case 3:
+        printf("Transformada de uma funcao F(x) = 10sin(x) + 7cos(30x) + 11sin(352x) - 8cos(711x)\n");
+
+        double complex F3[1024] = {}, c3[1024] = {}, f3[1024] = {};
+        for (int j = 0; j < 1024; j++) {
+            double x = j * PI / 512.;
+            F3[j] = 10*sin(x) + 7*cos(30*x) + 11*sin(352*x) - 8*cos(711*x);
+        }
+
+        N = 1024;
+        F = F3;
+        c = c3;
+        f = f3;
+    }
+
+
     startTime = clock();
-    fftd(c3, F3, 1024);
-    ffti(f3, c3, 1024);
+    fftd(c, F, N);
+    ffti(f, c, N);
     endTime = clock();
 
-    for (int i = 0; i < 1024; i++)
-        printf("% -.3f%+.3fi, ", creal(c3[i]), cimag(c3[i]));
+    printf("c = (");
+    for (int i = 0; i < N; i++)
+        printf("% -.3f%+.3fi, ", creal(c[i]), cimag(c[i]));
 
-    printf("\b\b).\n\nAplicando agora a transformada inversa:\n f = (");
+    printf("\b\b).\n\nAplicando agora a transformada inversa:\n"
+           "f = (");
 
-    for (int i = 0; i < 1024; i++)
-        printf("% -.3f%+.3fi, ", creal(f3[i]), cimag(f3[i]));
+    for (int i = 0; i < N; i++)
+        printf("% -.3f%+.3fi, ", creal(f[i]), cimag(f[i]));
 
     printf("\b\b).\n");
-    printf("Tempo para executar a funcao fft: %.3f s\n\n", (double)(endTime - startTime) / CLOCKS_PER_SEC);
 
+    printf("\nTempo para executar a funcao fft: %.3f s\n", (double)(endTime - startTime) / CLOCKS_PER_SEC);
 }

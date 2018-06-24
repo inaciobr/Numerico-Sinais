@@ -88,6 +88,9 @@ void complex2double(double complex *cChannel, double *channel, int size) {
         channel[i] = creal(cChannel[i]);
 }
 
+/**
+ *
+ */
 void writeFrequency(char file[], soundFrequency frequency) {
     FILE *fp = fopen(file, "w");
 

@@ -19,6 +19,6 @@ void filtroPassaAlta(double complex *c, int size, double indexMin);
 void filtroPassaFaixa(double complex *c, int size, double indexMin, double indexMax);
 void filtroRejeitaFaixa(double complex *c, int size, double indexMin, double indexMax);
 
-void compressaoAudicaoHumana(double complex *c, int size, double freqFundamental, double ampMin);
+double compressaoRemoveAmplitude(double complex *c, int size, double ampMin);
 
 #endif // FILTRO_H_INCLUDED

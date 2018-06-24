@@ -12,10 +12,8 @@
 #include "filtro.h"
 
 /**
- *
- NESTA FUNÇÃO, ZERAM-SE TODAS OS SINAIS DE TRANSFORMADA ACIMA DO
- PARÂMETRO DADO
- *
+ * NESTA FUNÇÃO, ZERAM-SE TODAS OS SINAIS DE TRANSFORMADA ACIMA DO
+ * PARÂMETRO DADO
  */
 void filtroPassaBaixa(double complex *c, int size, double indexMax) {
     if (c == NULL)
@@ -30,9 +28,8 @@ void filtroPassaBaixa(double complex *c, int size, double indexMax) {
 
 /**
  *
-  NESTA FUNÇÃO, ZERAM-SE TODAS OS SINAIS DE TRANSFORMADA ABAIXO DO
- PARÂMETRO DADO
- *
+ * NESTA FUNÇÃO, ZERAM-SE TODAS OS SINAIS DE TRANSFORMADA ABAIXO DO
+ * PARÂMETRO DADO
  */
 void filtroPassaAlta(double complex *c, int size, double indexMin) {
     if (c == NULL)
@@ -47,10 +44,8 @@ void filtroPassaAlta(double complex *c, int size, double indexMin) {
 }
 
 /**
- *
- FORA DE UM INTERVALO ESTIPULADO, TODAS OS REPRESENTANTES DESSAS
- FREQUÊNCIAS SÃO ANULADOS
- *
+ * FORA DE UM INTERVALO ESTIPULADO, TODAS OS REPRESENTANTES DESSAS
+ * FREQUÊNCIAS SÃO ANULADOS
  */
 void filtroPassaFaixa(double complex *c, int size, double indexMin, double indexMax) {
     if (c == NULL)
@@ -64,10 +59,8 @@ void filtroPassaFaixa(double complex *c, int size, double indexMin, double index
 }
 
 /**
- *
-DENTRO DE UM INTERVALO ESTIPULADO, TODAS OS REPRESENTANTES DESSAS
- FREQUÊNCIAS SÃO ANULADOS
- *
+ * DENTRO DE UM INTERVALO ESTIPULADO, TODAS OS REPRESENTANTES DESSAS
+ * FREQUÊNCIAS SÃO ANULADOS
  */
 void filtroRejeitaFaixa(double complex *c, int size, double indexMin, double indexMax) {
     if (c == NULL)
