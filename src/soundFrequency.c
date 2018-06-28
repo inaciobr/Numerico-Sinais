@@ -13,7 +13,9 @@
 #include "soundFrequency.h"
 
 /**
- *
+ * Função para realizar a conversão do tipo soundData, no domínio do tempo
+ * para o tipo soundFrequency, no domínimo da frequência complexa.
+ * A função recebe como argumento qual fft direta será utilizada.
  */
 soundFrequency SoX2Frequency(soundData sox, void (*fft)(complex *, complex *, int)) {
     soundFrequency frequency;
@@ -21,7 +23,7 @@ soundFrequency SoX2Frequency(soundData sox, void (*fft)(complex *, complex *, in
     frequency.sizeChannel = sox.sizeChannel;
     frequency.numSamples = sox.numSamples;
     frequency.sampleRate = sox.sampleRate;
-    frequency.frequency = (double) sox.sampleRate / sox.numSamples;
+    frequency.frequency = (double) sox.sampleRate / sox.sizeChannel;
     frequency.compressionRate = 0.0;
 
     double complex *complexChannel = malloc(frequency.sizeChannel * sizeof(double complex));
@@ -43,7 +45,9 @@ soundFrequency SoX2Frequency(soundData sox, void (*fft)(complex *, complex *, in
 }
 
 /**
- *
+ * Função para realizar a conversão do tipo soundFrequency, no domínimo da
+ * frequência complexa para o soundData, no domínio do tempo.
+ * A função recebe como argumento qual fft inversa será utilizada.
  */
 soundData frequency2SoX(soundFrequency frequency, void (*fft)(complex *, complex *, int)) {
     soundData sox;
@@ -73,7 +77,7 @@ soundData frequency2SoX(soundFrequency frequency, void (*fft)(complex *, complex
 }
 
 /**
- *
+ * Função para realizar a conversão de valores do tipo double para o tipo double complex.
  */
 void double2complex(double *channel, double complex *cChannel, int size) {
     for (int i = 0; i < size; i++)
@@ -81,7 +85,7 @@ void double2complex(double *channel, double complex *cChannel, int size) {
 }
 
 /**
- *
+ * Função para realizar a conversão de valores do tipo double complex para o tipo double.
  */
 void complex2double(double complex *cChannel, double *channel, int size) {
     for (int i = 0; i < size; i++)
@@ -89,7 +93,7 @@ void complex2double(double complex *cChannel, double *channel, int size) {
 }
 
 /**
- *
+ * Armazena em um arquivo dados referentes ao sinal no domínio da frequência.
  */
 void writeFrequency(char file[], soundFrequency frequency) {
     FILE *fp = fopen(file, "w");
@@ -97,32 +101,34 @@ void writeFrequency(char file[], soundFrequency frequency) {
     fprintf(fp, "; Sample Rate %d\n", frequency.sampleRate);
     fprintf(fp, "; Channels %d\n", frequency.channel2 == NULL ? 1 : 2);
     fprintf(fp, "; Duration %f\n", 1./frequency.frequency);
-    fprintf(fp, "; Compression rate %f\n", frequency.compressionRate);
+    fprintf(fp, "; Compression rate %.3f%%\n", frequency.compressionRate * 100.0);
 
-    fprintf(fp, "A = [");
 
+    /* Vetor de frequências. */
     double freq = 0.0;
-    for (int i = 0; i < frequency.sizeChannel / 2; i++) {
-        if (frequency.channel1[i] == 0.0 && (frequency.channel2 == NULL || frequency.channel2[i] == 0.0))
-            continue;
-
-        fprintf(fp, "%.8g, ", 2*cabs(frequency.channel1[i]));
-
-        freq += frequency.frequency;
-    }
-    fprintf(fp, "]\n;");
-
-    fprintf(fp, "f = [");
-    freq = 0.0;
-    for (int i = 0; i < frequency.sizeChannel / 2; i++) {
-        if (frequency.channel1[i] == 0.0 && (frequency.channel2 == NULL || frequency.channel2[i] == 0.0))
-            continue;
-
+    fprintf(fp, "; f = [");
+    for (int i = 0; i < frequency.sizeChannel/2 - 1; i++) {
         fprintf(fp, "%.8g, ", freq);
-
         freq += frequency.frequency;
     }
-    fprintf(fp, "];");
+    fprintf(fp, "%.8g]\n", freq);
+
+    /* Vetor de amplitudes no canal 1. */
+    fprintf(fp, "; A1 = [");
+    for (int i = 0; i < frequency.sizeChannel/2 - 1; i++) {
+        fprintf(fp, "%.8g, ", 2*cabs(frequency.channel1[i]));
+    }
+    fprintf(fp, "\%.8g]\n", 2*cabs(frequency.channel1[frequency.sizeChannel/2 - 1]));
+
+    /* Vetor de amplitudes no canal 2. */
+    if (frequency.channel2 != NULL) {
+        fprintf(fp, "; A2 = [");
+        for (int i = 0; i < frequency.sizeChannel/2 - 1; i++) {
+            fprintf(fp, "%.8g, ", 2*cabs(frequency.channel2[i]));
+        }
+        fprintf(fp, "%.8g]\n", 2*cabs(frequency.channel2[frequency.sizeChannel/2 - 1]));
+    }
+
 
     fclose(fp);
 }

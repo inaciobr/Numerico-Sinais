@@ -23,6 +23,9 @@
 
 void testesFFT(void (*fftd)(complex *, complex *, int), void (*ffti)(complex *, complex *, int));
 
+/**
+ * Função principal do programa.
+ */
 int main() {
     char file[256];
     printf("EP 2 - ENGENHARIA ELETRICA\n"
@@ -32,7 +35,7 @@ int main() {
     printf("Digite o nome do arquivo que deseja ler.\n"
            "Por exemplo: \"dados_sons/dog.dat\".\nVoce pode digitar \"teste\" para visualizar os testes iniciais.\n"
            "Arquivo: ");
-    scanf("%256[^\n]", file);
+    scanf("%s", file);
 
 
     FILE *fp = fopen(file, "r");
@@ -94,15 +97,16 @@ int main() {
 
     case 1:
     case 2:
-        printf("Digite o valor do indice K do filtro.");
+        printf("Digite o valor do indice K do filtro: ");
         scanf("%d", &K1);
         break;
 
     case 3:
+
     case 4:
-        printf("Digite o valor do menor indice K1.");
+        printf("Digite o valor do menor indice K1: ");
         scanf("%d", &K1);
-        printf("Digite o valor do maior indice K2.");
+        printf("Digite o valor do maior indice K2: ");
         scanf("%d", &K2);
         break;
 
@@ -151,30 +155,30 @@ int main() {
     }
 
     if (menuCompressao == 1) {
-        double comp;
+        freq.compressionRate = compressaoRemoveAmplitude(freq.channel1, freq.sizeChannel, ampMin);
 
-        comp = compressaoRemoveAmplitude(freq.channel1, freq.sizeChannel, ampMin);
-
-        printf("\nCompressao de %.3f%% no canal 1.\n", 100. * comp);
+        printf("\nCompressao de %.3f%% no canal 1.\n", 100. * freq.compressionRate);
 
         if (freq.channel2 != NULL) {
-            comp = compressaoRemoveAmplitude(freq.channel1, freq.sizeChannel, ampMin);
-            printf("Compressao de %.3f%% no canal 2.\n", 100. * comp);
+            freq.compressionRate = compressaoRemoveAmplitude(freq.channel2, freq.sizeChannel, ampMin);
+            printf("Compressao de %.3f%% no canal 2.\n", 100. * freq.compressionRate);
         }
     }
 
     soundData sox2 = frequency2SoX(freq, ffti);
-    printf("\nTempo para executar a funcao fft: %.3f\n", (double)(clock() - startTime) / CLOCKS_PER_SEC);
+    printf("\nTempo para executar a funcao fft: %.3f s\n", (double)(clock() - startTime) / CLOCKS_PER_SEC);
 
     writeFrequency("frequencias.dat", freq);
     writeSoX("novoAudio.dat", sox2);
 
+    printf("\nOs resultados no formato SoX foram escritos no arquivo \"novoAudio.dat\".\n"
+           "Os resultados no dominio da frequencia foram escritos no arquivo \"frequencias.dat\".\n");
 
     return 0;
 }
 
 /**
- *
+ * Função para exibir os testes iniciais descritos no enunciado.
  */
 void testesFFT(void (*fftd)(complex *, complex *, int), void (*ffti)(complex *, complex *, int)) {
     int menuTestes;

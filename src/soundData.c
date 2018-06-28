@@ -15,6 +15,12 @@
 /**
  * Inicializa a struct soundData com os valores lidos
  * de um arquivo .dat no formato do software SoX.
+ * A função recebe como argumento também um valor power2
+ * que pode ser descrito da seguinte forma:
+ * 0 - Salva os dados da maneira original.
+ * 1 - Salva os dados com quantidade de valores igual a
+ *     uma potência de 2. Os novos dados inserios são
+ *     iguais à média de todo o sinal original.
  */
 soundData readSoX(char file[], int power2) {
     soundData sox;

@@ -27,7 +27,6 @@ void filtroPassaBaixa(double complex *c, int size, double indexMax) {
 }
 
 /**
- *
  * NESTA FUNÇÃO, ZERAM-SE TODAS OS SINAIS DE TRANSFORMADA ABAIXO DO
  * PARÂMETRO DADO
  */
@@ -53,7 +52,8 @@ void filtroPassaFaixa(double complex *c, int size, double indexMin, double index
 
     int N = size / 2;
 
-    for (int k = 0; k < N; k++)
+    /* Não corta a frequência de índice zero, associada ao termo constante. */
+    for (int k = 1; k < N; k++)
         if (k < indexMin || k > indexMax)
             c[k] = c[size - k - 1] = 0.0;
 }
@@ -74,12 +74,13 @@ void filtroRejeitaFaixa(double complex *c, int size, double indexMin, double ind
 }
 
 /**
- *
- *
+ * Remove frequências abaixo de uma amplitude mínima ampMin para
+ * realizar a compressão do sinal. A função retorna a taxa de
+ * compressão.
  */
 double compressaoRemoveAmplitude(double complex *c, int size, double ampMin) {
     if (c == NULL)
-        return;
+        return 0.0;
 
     int N = size / 2;
     int zeros = 0;
